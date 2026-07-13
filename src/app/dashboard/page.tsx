@@ -15,6 +15,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -25,14 +26,16 @@ function StatCard({
   value,
   icon: Icon,
   accent = 'text-brand bg-brand/15',
+  className,
 }: {
   label: string;
   value: React.ReactNode;
   icon: React.ElementType;
   accent?: string;
+  className?: string;
 }) {
   return (
-    <Card>
+    <Card className={cn('np-surface-hover', className)}>
       <CardContent className="flex items-center gap-4 p-5">
         <div className={cn('flex h-11 w-11 shrink-0 items-center justify-center rounded-xl', accent)}>
           <Icon className="h-5 w-5" />
@@ -46,10 +49,20 @@ function StatCard({
   );
 }
 
+function greeting(): string {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning';
+  if (h < 18) return 'Good afternoon';
+  return 'Good evening';
+}
+
 export default function DashboardOverview() {
+  const { data: session } = useSession();
   const { data: pages, isLoading: isLoadingPages } = usePages();
   const { data: photos, isLoading: isLoadingPhotos } = usePhotos();
   const apiOnline = useApiStatus();
+
+  const firstName = session?.user?.name?.split(' ')[0];
 
   const publishedCount = pages?.filter((p) => p.published).length ?? 0;
 
@@ -72,7 +85,10 @@ export default function DashboardOverview() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            {greeting()}
+            {firstName ? `, ${firstName}` : ''}
+          </h1>
           <p className="text-sm text-neutral-400 mt-1">{today}</p>
         </div>
         <div className="flex gap-2">
@@ -92,23 +108,27 @@ export default function DashboardOverview() {
       {/* Stat row */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
+          className="anim-fade-up stagger-1"
           label="Total Pages"
           value={isLoadingPages ? '–' : pages?.length ?? 0}
           icon={FileText}
         />
         <StatCard
+          className="anim-fade-up stagger-2"
           label="Published"
           value={isLoadingPages ? '–' : publishedCount}
           icon={CheckCircle2}
           accent="text-green-400 bg-green-500/15"
         />
         <StatCard
+          className="anim-fade-up stagger-3"
           label="Photos"
           value={isLoadingPhotos ? '–' : photos?.length ?? 0}
           icon={ImageIcon}
           accent="text-blue-400 bg-blue-500/15"
         />
         <StatCard
+          className="anim-fade-up stagger-4"
           label="Live Sync"
           value={
             <span

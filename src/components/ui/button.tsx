@@ -29,15 +29,18 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     
     // Base classes
     const baseClasses =
-      'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50';
-    
+      'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]';
+
     // Variant classes
     const variantClasses = {
-      default: 'bg-brand text-white hover:bg-brand-hover shadow-sm',
-      destructive: 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
-      outline: 'border border-border bg-transparent hover:bg-neutral-800 text-foreground',
-      ghost: 'hover:bg-neutral-800 text-foreground',
-      link: 'text-brand underline-offset-4 hover:underline',
+      default:
+        'bg-brand text-black font-semibold hover:bg-brand-hover shadow-[0_1px_2px_rgba(0,0,0,.4),inset_0_1px_0_rgba(255,255,255,.2)]',
+      destructive:
+        'bg-red-600 text-white hover:bg-red-500 shadow-[0_1px_2px_rgba(0,0,0,.4),inset_0_1px_0_rgba(255,255,255,.1)]',
+      outline:
+        'border border-border bg-surface hover:bg-surface-2 hover:border-border-strong text-foreground',
+      ghost: 'hover:bg-surface-2 text-foreground',
+      link: 'text-brand underline-offset-4 hover:underline active:scale-100',
     }[variant];
     
     // Size classes

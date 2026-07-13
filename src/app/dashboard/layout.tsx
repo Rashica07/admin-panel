@@ -154,6 +154,15 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const role = session?.user?.role ?? '';
   const navGroups = buildNav(isSuperAdmin);
 
+  // Current page title for the desktop top bar, derived from the nav.
+  const pageTitle =
+    navGroups
+      .flatMap((g) => g.items)
+      .find((i) =>
+        !i.external &&
+        (i.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(i.href)),
+      )?.name ?? 'Dashboard';
+
   // Collapsed only applies on desktop; the mobile drawer is always full width
   const collapsed = sidebarCollapsed;
 
@@ -170,7 +179,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 -translate-x-full flex-col border-r border-border bg-background transition-all duration-200 lg:static lg:flex lg:translate-x-0',
+          'fixed inset-y-0 left-0 z-50 -translate-x-full flex-col border-r border-border bg-sidebar transition-all duration-200 lg:static lg:flex lg:translate-x-0',
           isSidebarOpen && 'flex translate-x-0',
           collapsed ? 'w-64 lg:w-[76px]' : 'w-64'
         )}
@@ -225,17 +234,20 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
                   const isLocked = item.gate ? !hasFeature(plan, item.gate) : false;
 
                   const classes = cn(
-                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                    'relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150',
                     collapsed && 'lg:justify-center lg:px-0 lg:py-2.5',
                     isLocked
                       ? 'text-neutral-600 hover:bg-neutral-800/40 hover:text-neutral-500 border border-transparent'
                       : isActive
                       ? 'bg-brand/10 text-brand border border-brand/20'
-                      : 'text-neutral-400 hover:bg-neutral-800/70 hover:text-white border border-transparent'
+                      : 'text-neutral-400 hover:bg-surface-2 hover:text-white hover:translate-x-0.5 border border-transparent'
                   );
 
                   const inner = (
                     <>
+                      {isActive && !isLocked && (
+                        <span className="np-pulse absolute -left-px top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-brand" />
+                      )}
                       <item.icon
                         className={cn(
                           'h-[18px] w-[18px] shrink-0',
@@ -444,6 +456,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
       {/* Main content */}
       <main className="flex flex-1 flex-col overflow-hidden">
+        {/* Mobile top bar */}
         <div className="flex h-16 items-center justify-between border-b border-border px-4 lg:hidden">
           <Button variant="ghost" size="icon" onClick={toggleSidebar}>
             <Menu className="h-5 w-5" />
@@ -452,7 +465,30 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
           <div className="w-9" />
         </div>
 
-        <div className="flex-1 overflow-y-auto p-4 lg:p-8">{children}</div>
+        {/* Desktop top bar — page context + quick actions */}
+        <div className="hidden h-14 shrink-0 items-center justify-between border-b border-border bg-background/80 px-8 backdrop-blur lg:flex">
+          <div className="flex items-baseline gap-3">
+            <h2 className="text-sm font-semibold tracking-tight text-white">{pageTitle}</h2>
+            {activeTenantName && (
+              <span className="text-xs text-neutral-500">{activeTenantName}</span>
+            )}
+          </div>
+          <a
+            href={SITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-400 transition-colors duration-150 hover:bg-surface-2 hover:text-white"
+          >
+            <Globe className="h-3.5 w-3.5" />
+            View live site
+          </a>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8">
+          <div key={pathname} className="anim-page">
+            {children}
+          </div>
+        </div>
       </main>
 
       {/* Floating chat support (local assistant — no API keys) */}

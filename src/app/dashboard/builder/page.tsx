@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
+import { useQuery } from '@tanstack/react-query';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -335,6 +336,16 @@ export default function VisualBuilderPage() {
   const [pageId, setPageId] = useState<string | null>(null);
   const pulseRef = useRef<any>(null);
 
+  const { data: tenant } = useQuery({
+    queryKey: ['tenant-details', session?.user?.tenantId],
+    queryFn: async () => {
+      if (!session?.accessToken || !session?.user?.tenantId) return null;
+      const pulse = createPulseClient(session.accessToken);
+      return pulse.getTenant(session.user.tenantId);
+    },
+    enabled: !!session?.accessToken && !!session?.user?.tenantId,
+  });
+
   const [content, setContent] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [openSection, setOpenSection] = useState<string>('hero');
@@ -534,7 +545,7 @@ export default function VisualBuilderPage() {
         </div>
 
         <iframe
-          src="http://localhost:21113"
+          src={tenant?.slug ? `http://localhost:21113?tenant=${tenant.slug}` : 'http://localhost:21113'}
           className="w-full h-full border-0"
           title="Portfolio Live Preview"
         />
