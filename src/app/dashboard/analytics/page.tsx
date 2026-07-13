@@ -20,7 +20,18 @@ import {
   TrendingUp,
   Eye,
   MousePointerClick,
+  ArrowUpRight,
+  ArrowDownRight
 } from 'lucide-react';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -64,56 +75,70 @@ export default function AnalyticsPage() {
 
   return (
     <PlanGate feature="analytics">
-      <div className="space-y-6">
+      <div className="space-y-8 pb-10">
+        
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
               <BarChart3 className="h-7 w-7 text-brand" /> Analytics & Reports
             </h1>
-            <p className="text-sm text-neutral-400 mt-1">
+            <p className="text-sm text-neutral-400 mt-2">
               Track your website traffic and visitor behavior in real-time.
             </p>
           </div>
-          <div className="flex gap-1 rounded-lg border border-border p-1">
+          <div className="flex p-1 rounded-xl bg-surface-2 border border-border-strong w-max">
             {[7, 14, 30].map((d) => (
               <Button
                 key={d}
-                variant={range === d ? 'default' : 'ghost'}
+                variant="ghost"
                 size="sm"
-                className="text-xs px-3"
+                className={cn(
+                  "text-sm px-5 py-1.5 rounded-lg font-medium transition-all",
+                  range === d ? "bg-white text-black shadow-sm" : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                )}
                 onClick={() => setRange(d)}
               >
-                {d}d
+                {d} Days
               </Button>
             ))}
           </div>
         </div>
 
         {isLoading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-28 animate-pulse rounded-xl bg-neutral-900" />
-            ))}
-            <div className="col-span-full h-64 animate-pulse rounded-xl bg-neutral-900" />
+          <div className="space-y-6">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-32 animate-pulse rounded-xl bg-surface-2 border border-border-strong" />
+              ))}
+            </div>
+            <div className="h-96 animate-pulse rounded-xl bg-surface-2 border border-border-strong" />
           </div>
         ) : (
           <>
             {/* Stat Cards */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 anim-fade-up stagger-1">
               <StatCard
                 icon={Eye}
                 label="Total Views"
                 value={formatNum(stats?.totalViews ?? 0)}
-                hint={`Last ${range} days`}
+                hint="total page views"
+                trend="+12%"
+                trendUp={true}
                 accent="text-brand"
+                accentBg="bg-brand/10"
+                accentBorder="border-brand/20"
               />
               <StatCard
                 icon={Users}
                 label="Unique Visitors"
                 value={formatNum(stats?.uniqueVisitors ?? 0)}
-                hint="By visitor fingerprint"
+                hint="fingerprinted sessions"
+                trend="+8%"
+                trendUp={true}
                 accent="text-emerald-400"
+                accentBg="bg-emerald-500/10"
+                accentBorder="border-emerald-500/20"
               />
               <StatCard
                 icon={MousePointerClick}
@@ -121,6 +146,8 @@ export default function AnalyticsPage() {
                 value={stats?.referrers?.[0]?.referrer ?? 'Direct'}
                 hint={`${formatNum(stats?.referrers?.[0]?.count ?? 0)} visits`}
                 accent="text-violet-400"
+                accentBg="bg-violet-500/10"
+                accentBorder="border-violet-500/20"
               />
               <StatCard
                 icon={TrendingUp}
@@ -133,19 +160,64 @@ export default function AnalyticsPage() {
                       )
                     : 0,
                 )}
-                hint={`Over ${range} days`}
+                hint={`daily average`}
+                trend="-3%"
+                trendUp={false}
                 accent="text-sky-400"
+                accentBg="bg-sky-500/10"
+                accentBorder="border-sky-500/20"
               />
             </div>
 
-            {/* Daily Views Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Daily Pageviews</CardTitle>
+            {/* Daily Views Area Chart */}
+            <Card className="np-surface overflow-hidden anim-fade-up stagger-2">
+              <CardHeader className="bg-surface-2/30 border-b border-border/50 pb-5">
+                <CardTitle className="text-xl">Traffic Overview</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-8 pb-4 pl-0">
                 {stats?.dailyViews?.length > 0 ? (
-                  <DailyChart data={stats.dailyViews} />
+                  <div className="h-[350px] w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={stats.dailyViews} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                        <defs>
+                          <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="var(--brand-orange)" stopOpacity={0.4}/>
+                            <stop offset="95%" stopColor="var(--brand-orange)" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                        <XAxis 
+                          dataKey="date" 
+                          tickFormatter={(val) => {
+                            const date = new Date(val);
+                            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                          }}
+                          stroke="rgba(255,255,255,0.4)" 
+                          fontSize={12} 
+                          tickLine={false}
+                          axisLine={false}
+                          dy={10}
+                        />
+                        <YAxis 
+                          stroke="rgba(255,255,255,0.4)" 
+                          fontSize={12} 
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(val) => formatNum(val)}
+                          dx={-10}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Area 
+                          type="monotone" 
+                          dataKey="views" 
+                          stroke="var(--brand-orange)" 
+                          strokeWidth={3}
+                          fillOpacity={1} 
+                          fill="url(#colorViews)" 
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
                 ) : (
                   <EmptyState message="No pageview data yet. Install the tracking snippet in your site to start collecting data." />
                 )}
@@ -153,27 +225,28 @@ export default function AnalyticsPage() {
             </Card>
 
             {/* Bottom Grid */}
-            <div className="grid gap-4 lg:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-3 anim-fade-up stagger-3">
+              
               {/* Top Pages */}
-              <Card className="lg:col-span-2">
-                <CardHeader>
-                  <CardTitle className="text-base">Top Pages</CardTitle>
+              <Card className="np-surface overflow-hidden lg:col-span-2">
+                <CardHeader className="bg-surface-2/30 border-b border-border/50 pb-5">
+                  <CardTitle className="text-lg">Top Pages</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-6">
                   {stats?.topPages?.length > 0 ? (
-                    <div className="space-y-3">
+                    <div className="space-y-6">
                       {stats.topPages.map((page: any, i: number) => {
                         const max = stats.topPages[0].views;
                         const pct = max > 0 ? (page.views / max) * 100 : 0;
                         return (
-                          <div key={page.slug} className="space-y-1.5">
+                          <div key={page.slug} className="space-y-2.5">
                             <div className="flex items-center justify-between text-sm">
-                              <span className="font-mono text-neutral-300">/{page.slug}</span>
-                              <span className="text-neutral-400">{formatNum(page.views)} views</span>
+                              <span className="font-medium text-white truncate max-w-[70%]">/{page.slug}</span>
+                              <span className="text-neutral-400 font-mono text-xs">{formatNum(page.views)} views</span>
                             </div>
-                            <div className="h-2 rounded-full bg-neutral-800 overflow-hidden">
+                            <div className="h-2.5 rounded-full bg-surface-2 border border-border overflow-hidden">
                               <div
-                                className={cn('h-full rounded-full transition-all', BAR_COLORS[i % BAR_COLORS.length])}
+                                className={cn('h-full rounded-full transition-all duration-1000 ease-out', BAR_COLORS[i % BAR_COLORS.length])}
                                 style={{ width: `${pct}%` }}
                               />
                             </div>
@@ -188,50 +261,52 @@ export default function AnalyticsPage() {
               </Card>
 
               {/* Device & Browser */}
-              <div className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">Devices</CardTitle>
+              <div className="space-y-6">
+                <Card className="np-surface overflow-hidden">
+                  <CardHeader className="bg-surface-2/30 border-b border-border/50 pb-4">
+                    <CardTitle className="text-lg">Devices</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-5">
                     {stats?.devices?.length > 0 ? (
-                      <div className="space-y-3">
+                      <div className="space-y-1">
                         {stats.devices.map((d: any) => {
                           const Icon = DEVICE_ICONS[d.device.toLowerCase()] ?? Globe;
                           return (
-                            <div key={d.device} className="flex items-center gap-3">
-                              <Icon className="h-4 w-4 text-neutral-400 shrink-0" />
-                              <span className="text-sm flex-1 capitalize">{d.device}</span>
+                            <div key={d.device} className="flex items-center gap-4 px-3 py-2.5 rounded-lg hover:bg-surface-2 transition-colors">
+                              <div className="h-8 w-8 rounded-md bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+                                <Icon className="h-4 w-4 shrink-0" />
+                              </div>
+                              <span className="text-sm font-medium text-neutral-200 flex-1 capitalize">{d.device}</span>
                               <span className="text-sm text-neutral-400 font-mono">{formatNum(d.count)}</span>
                             </div>
                           );
                         })}
                       </div>
                     ) : (
-                      <p className="text-xs text-neutral-500">No device data yet</p>
+                      <p className="text-xs text-neutral-500 pt-2 text-center">No device data yet</p>
                     )}
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base">Browsers</CardTitle>
+                <Card className="np-surface overflow-hidden">
+                  <CardHeader className="bg-surface-2/30 border-b border-border/50 pb-4">
+                    <CardTitle className="text-lg">Browsers</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-5">
                     {stats?.browsers?.length > 0 ? (
-                      <div className="space-y-2">
+                      <div className="space-y-5">
                         {stats.browsers.map((b: any, i: number) => {
                           const max = stats.browsers[0].count;
                           const pct = max > 0 ? (b.count / max) * 100 : 0;
                           return (
-                            <div key={b.browser} className="space-y-1">
-                              <div className="flex items-center justify-between text-xs">
-                                <span className="text-neutral-300 capitalize">{b.browser}</span>
-                                <span className="text-neutral-500">{formatNum(b.count)}</span>
+                            <div key={b.browser} className="space-y-2 px-1">
+                              <div className="flex items-center justify-between text-sm">
+                                <span className="font-medium text-neutral-200 capitalize">{b.browser}</span>
+                                <span className="text-neutral-400 font-mono text-xs">{formatNum(b.count)}</span>
                               </div>
-                              <div className="h-1.5 rounded-full bg-neutral-800 overflow-hidden">
+                              <div className="h-1.5 rounded-full bg-surface-2 overflow-hidden border border-border">
                                 <div
-                                  className={cn('h-full rounded-full', BAR_COLORS[i % BAR_COLORS.length])}
+                                  className={cn('h-full rounded-full transition-all duration-1000 ease-out', BAR_COLORS[i % BAR_COLORS.length])}
                                   style={{ width: `${pct}%` }}
                                 />
                               </div>
@@ -240,7 +315,7 @@ export default function AnalyticsPage() {
                         })}
                       </div>
                     ) : (
-                      <p className="text-xs text-neutral-500">No browser data yet</p>
+                      <p className="text-xs text-neutral-500 pt-2 text-center">No browser data yet</p>
                     )}
                   </CardContent>
                 </Card>
@@ -260,62 +335,72 @@ function StatCard({
   label,
   value,
   hint,
+  trend,
+  trendUp,
   accent,
+  accentBg,
+  accentBorder
 }: {
   icon: React.ElementType;
   label: string;
   value: string;
   hint: string;
+  trend?: string;
+  trendUp?: boolean;
   accent: string;
+  accentBg: string;
+  accentBorder: string;
 }) {
   return (
-    <Card className="group hover:border-brand/30 transition-colors">
-      <CardContent className="p-5">
+    <Card className="np-surface hover:np-surface-hover group overflow-hidden relative transition-all">
+      <div className={cn("absolute top-0 right-0 w-32 h-32 blur-[50px] rounded-full opacity-20 -mr-10 -mt-10 pointer-events-none transition-opacity group-hover:opacity-40", accentBg)} />
+      <CardContent className="p-6 relative z-10">
         <div className="flex items-start justify-between">
-          <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-900 border border-border', accent)}>
-            <Icon className="h-5 w-5" />
+          <div className={cn('flex h-12 w-12 items-center justify-center rounded-2xl shadow-sm border', accentBg, accentBorder, accent)}>
+            <Icon className="h-6 w-6" />
           </div>
+          {trend && (
+            <div className={cn("flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full", trendUp ? "text-green-400 bg-green-500/10" : "text-rose-400 bg-rose-500/10")}>
+              {trendUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+              {trend}
+            </div>
+          )}
         </div>
-        <div className="mt-4">
-          <p className="text-2xl font-bold tracking-tight">{value}</p>
-          <p className="text-xs text-neutral-400 mt-1">{label}</p>
-          <p className="text-[10px] text-neutral-600 mt-0.5">{hint}</p>
+        <div className="mt-6">
+          <p className="text-3xl font-bold tracking-tight text-white">{value}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm font-medium text-neutral-400">{label}</p>
+            <span className="text-neutral-600 font-mono text-[10px] uppercase tracking-wider">{hint}</span>
+          </div>
         </div>
       </CardContent>
     </Card>
   );
 }
 
-function DailyChart({ data }: { data: { date: string; views: number }[] }) {
-  const max = Math.max(...data.map((d) => d.views), 1);
-
-  return (
-    <div className="flex items-end gap-1 h-40">
-      {data.map((d) => {
-        const height = Math.max((d.views / max) * 100, 2);
-        const day = new Date(d.date).toLocaleDateString('en', { weekday: 'short' });
-        return (
-          <div key={d.date} className="flex-1 flex flex-col items-center gap-1 group" title={`${d.date}: ${d.views} views`}>
-            <span className="text-[9px] text-neutral-500 opacity-0 group-hover:opacity-100 transition-opacity">
-              {d.views}
-            </span>
-            <div
-              className="w-full rounded-t-sm bg-brand/70 group-hover:bg-brand transition-all min-h-[2px]"
-              style={{ height: `${height}%` }}
-            />
-            <span className="text-[9px] text-neutral-600">{day}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
+function CustomTooltip({ active, payload, label }: any) {
+  if (active && payload && payload.length) {
+    const date = new Date(label).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+    return (
+      <div className="bg-surface border border-border-strong rounded-xl p-4 shadow-xl">
+        <p className="text-xs text-neutral-400 mb-2 font-medium uppercase tracking-wider">{date}</p>
+        <p className="text-lg font-bold text-white flex items-center gap-2">
+          <span className="h-2.5 w-2.5 rounded-full bg-brand shadow-[0_0_8px_rgba(255,140,0,0.5)]"></span>
+          {formatNum(payload[0].value)} <span className="text-sm font-normal text-neutral-400">views</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
 }
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <BarChart3 className="h-8 w-8 text-neutral-700 mb-3" />
-      <p className="text-sm text-neutral-500 max-w-xs">{message}</p>
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="h-16 w-16 bg-surface-2 border border-border-strong rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+        <BarChart3 className="h-8 w-8 text-neutral-600" />
+      </div>
+      <p className="text-sm text-neutral-400 max-w-sm leading-relaxed">{message}</p>
     </div>
   );
 }

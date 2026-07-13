@@ -7,10 +7,9 @@ import { PageForm, type PageFormValues } from '@/components/pages/page-form';
 import { PageRevisionsPanel } from '@/components/pages/page-revisions';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { ArrowLeft, Trash2, ExternalLink, History } from 'lucide-react';
+import { ArrowLeft, Trash2, ExternalLink, History, Paintbrush, Save } from 'lucide-react';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
-
 
 export default function EditPage() {
   const params = useParams();
@@ -21,19 +20,32 @@ export default function EditPage() {
   const { mutateAsync: updatePage, isPending: isUpdating } = useUpdatePage();
   const { mutateAsync: deletePage, isPending: isDeleting } = useDeletePage();
   
-  const [showPreview, setShowPreview] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
 
   if (isLoading) {
     return (
-      <div className="flex h-[400px] items-center justify-center">Loading...</div>
+      <div className="flex h-[400px] items-center justify-center">
+        <div className="animate-pulse space-y-4 w-full max-w-4xl">
+          <div className="h-8 bg-neutral-800 rounded w-1/4"></div>
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-8 space-y-4">
+              <div className="h-64 bg-neutral-800 rounded"></div>
+              <div className="h-40 bg-neutral-800 rounded"></div>
+            </div>
+            <div className="col-span-4 space-y-4">
+              <div className="h-32 bg-neutral-800 rounded"></div>
+              <div className="h-32 bg-neutral-800 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
   if (!page) {
     return (
       <div className="flex flex-col items-center justify-center space-y-4 py-20">
-        <h2 className="text-xl font-semibold">Page not found</h2>
+        <h2 className="text-xl font-semibold">Content not found</h2>
         <Link href="/dashboard/pages">
           <Button variant="outline">Go back</Button>
         </Link>
@@ -72,71 +84,61 @@ export default function EditPage() {
         },
       });
       
-      toast.success('Page updated successfully!');
+      toast.success('Content saved successfully!');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to update page');
+      toast.error(error.message || 'Failed to update content');
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this page? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this content? This action cannot be undone.')) {
       return;
     }
     
     try {
       await deletePage(id);
-      toast.success('Page deleted successfully');
+      toast.success('Content deleted successfully');
       router.push('/dashboard/pages');
     } catch (error: any) {
-      toast.error(error.message || 'Failed to delete page');
+      toast.error(error.message || 'Failed to delete content');
     }
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-5xl space-y-6">
+      
+      {/* ─── HEADER ───────────────────────────────────────── */}
       <div className="flex items-center gap-4">
         <Link href="/dashboard/pages">
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-white">
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Edit Page</h1>
-          <p className="text-sm text-neutral-400">Make changes to your page.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-white">{page.title}</h1>
         </div>
+        
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="outline" onClick={() => setShowHistory(!showHistory)}>
-            <History className="mr-2 h-4 w-4 text-brand" />
-            {showHistory ? 'Hide History' : 'History'}
+          <Button variant="outline" onClick={() => setShowHistory(!showHistory)} className="border-border-strong text-neutral-300 hidden sm:flex">
+            <History className="mr-2 h-4 w-4" />
+            {showHistory ? 'Hide History' : 'Version History'}
           </Button>
-          <Button variant="outline" onClick={() => setShowPreview(!showPreview)}>
-            <ExternalLink className="mr-2 h-4 w-4 text-brand" />
-            {showPreview ? 'Hide Preview' : 'Preview'}
+          <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting} size="icon" className="h-9 w-9 hidden sm:flex">
+            <Trash2 className="h-4 w-4" />
           </Button>
-          <Button variant="destructive" onClick={handleDelete} isLoading={isDeleting}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </Button>
-          <Button type="submit" form="page-form" isLoading={isUpdating}>
-            Save Changes
+          <Link href={`/dashboard/builder?page=${id}`}>
+            <Button variant="outline" className="border-border-strong bg-surface-2 text-white hover:bg-surface-2/80 gap-2">
+              <Paintbrush className="h-4 w-4" />
+              Visual Editor
+            </Button>
+          </Link>
+          <Button type="submit" form="page-form" isLoading={isUpdating} className="gap-2 bg-brand text-black hover:bg-brand-hover">
+            <Save className="h-4 w-4" /> Save
           </Button>
         </div>
       </div>
 
       <PageRevisionsPanel pageId={id} open={showHistory} />
-
-      {showPreview && (
-        <Card className="border-brand">
-          <CardContent className="p-6">
-            <h3 className="mb-4 text-lg font-semibold text-brand">Live Preview</h3>
-            <div className="rounded-md border border-border bg-neutral-900 p-4 font-mono text-sm">
-              <pre className="whitespace-pre-wrap">
-                {JSON.stringify(page.content, null, 2)}
-              </pre>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       <PageForm
         key={String(page.updatedAt)}
