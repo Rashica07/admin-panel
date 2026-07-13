@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 import { PlanGate } from '@/components/plan-gate';
@@ -34,17 +34,43 @@ export default function ThemesPage() {
   const [theme, setTheme] = useState(DEFAULT_THEME);
   const [saving, setSaving] = useState(false);
 
-  // In a real app we'd fetch the current theme from a /tenants/me endpoint or session
-  // For the mockup we just use the default state, assuming it's synced.
+  // Load the tenant's actually-saved theme so edits start from the real
+  // current state, not the defaults (merge so any missing keys fall back).
+  useEffect(() => {
+    if (!session?.accessToken) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const pulse = createPulseClient(session.accessToken);
+        const tenant = await pulse.getMyTenant();
+        const saved = (tenant as { theme?: typeof DEFAULT_THEME }).theme;
+        if (!cancelled && saved) {
+          setTheme({
+            colors: { ...DEFAULT_THEME.colors, ...(saved.colors ?? {}) },
+            fonts: { ...DEFAULT_THEME.fonts, ...(saved.fonts ?? {}) },
+            borderRadius: saved.borderRadius ?? DEFAULT_THEME.borderRadius,
+          });
+        }
+      } catch {
+        // Keep defaults if the tenant theme can't be loaded.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.accessToken]);
 
   const saveTheme = async () => {
     setSaving(true);
     try {
       const pulse = createPulseClient(session?.accessToken);
-      await pulse.updateTenantTheme(session?.user?.tenantId as string, theme);
+      // Self-scoped route — works for tenant owners, not just super_admin.
+      // (The old updateTenantTheme hit a super_admin-only endpoint, so a
+      // normal tenant got a 403 and the save silently failed.)
+      await pulse.updateMyTheme(theme);
       toast.success('Theme published to live site');
     } catch (err: any) {
-      toast.error('Failed to save theme');
+      toast.error(err?.message || 'Failed to save theme');
     } finally {
       setSaving(false);
     }
@@ -66,10 +92,15 @@ export default function ThemesPage() {
               Customize colors, typography, and styling for your storefront.
             </p>
           </div>
-          <Button onClick={saveTheme} disabled={saving} className="gap-2">
-            {saving ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            Publish Theme
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={() => setTheme(DEFAULT_THEME)} className="border-border-strong text-neutral-300 hover:text-white">
+              Reset to Default
+            </Button>
+            <Button onClick={saveTheme} disabled={saving} className="gap-2">
+              {saving ? <RefreshCcw className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              Publish Theme
+            </Button>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-6">
