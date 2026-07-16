@@ -29,6 +29,9 @@ import {
   Eye,
   Newspaper,
   Folder,
+  MessageCircle,
+  Link2,
+  Tag,
 } from 'lucide-react';
 import { useState, useEffect, Suspense } from 'react';
 import { useUIStore } from '@/store/useStore';
@@ -64,31 +67,23 @@ function buildNav(isSuperAdmin: boolean): NavGroup[] {
   groups.push({
     label: '',
     items: [
-      { name: 'Home', href: '/dashboard', icon: Home },
+      { name: 'Dashboard', href: '/dashboard', icon: Home },
+      { name: 'Products', href: '/dashboard/products', icon: Tag },
     ],
   });
 
   groups.push({
     label: 'Sales channels',
     items: [
+      { name: 'Inbox (WhatsApp)', href: '/dashboard/inbox', icon: MessageCircle },
       { name: 'Online Store', href: '/dashboard/websites', icon: Globe, gate: 'multisite' },
-    ],
-  });
-
-  groups.push({
-    label: 'Content Management',
-    items: [
-      { name: 'Pages', href: '/dashboard/pages', icon: FileText },
-      { name: 'Posts', href: '/dashboard/posts', icon: Newspaper },
-      { name: 'Categories', href: '/dashboard/categories', icon: Folder },
-      { name: 'Visual Editor', href: '/dashboard/builder', icon: Paintbrush },
-      { name: 'Media Library', href: '/dashboard/photos', icon: ImageIcon },
     ],
   });
 
   groups.push({
     label: 'Storefront',
     items: [
+      { name: 'Visual Editor', href: '/dashboard/builder', icon: Paintbrush },
       { name: 'Forms & Leads', href: '/dashboard/forms', icon: FormInput, gate: 'forms' },
       { name: 'Themes', href: '/dashboard/themes', icon: Palette, gate: 'themes' },
       { name: 'Menus', href: '/dashboard/menus', icon: AlignLeft, gate: 'menus' },
@@ -98,6 +93,7 @@ function buildNav(isSuperAdmin: boolean): NavGroup[] {
   groups.push({
     label: 'Growth',
     items: [
+      { name: 'Connected Apps', href: '/dashboard/connected-apps', icon: Link2 },
       { name: 'Analytics', href: '/dashboard/analytics', icon: LineChart, gate: 'analytics' },
       { name: 'SEO', href: '/dashboard/seo', icon: SearchCheck, gate: 'seo' },
     ],
@@ -183,7 +179,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             <div className="h-6 w-6 rounded bg-brand flex items-center justify-center text-black font-black text-xs">
               NP
             </div>
-            <span>Novus Pulse</span>
+            <span>Admin Panel</span>
           </Link>
           <Button variant="ghost" size="icon" className="lg:hidden h-8 w-8 rounded-md" onClick={closeSidebar}>
             <X className="h-4 w-4" />
@@ -202,30 +198,26 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const isActive = !item.external && (item.href === '/dashboard' ? pathname === '/dashboard' : pathname.startsWith(item.href));
+                  const isLocked = item.gate && !hasFeature(plan, item.gate);
+                  if (isLocked) return null;
+
                   const hasChildren = !!item.children?.length;
                   const isOpen = hasChildren && (expanded.has(item.name) || isActive);
-                  const isLocked = item.gate ? !hasFeature(plan, item.gate) : false;
 
                   const inner = (
                     <>
                       {/* Active Left Indicator Bar */}
-                      {isActive && !isLocked && (
+                      {isActive && (
                         <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full bg-brand" />
                       )}
                       <item.icon
                         className={cn(
                           'h-[18px] w-[18px] shrink-0',
-                          isLocked ? 'text-neutral-600' : isActive ? 'text-brand' : 'text-neutral-400 group-hover:text-neutral-200'
+                          isActive ? 'text-brand' : 'text-neutral-400 group-hover:text-neutral-200'
                         )}
                       />
                       <span className="truncate">{item.name}</span>
-                      {isLocked && item.gate && (
-                        <span className="ml-auto rounded bg-neutral-800/80 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-neutral-500">
-                          <Lock className="h-2.5 w-2.5 inline-block mr-0.5" />
-                          {PLAN_LABEL[hasFeature('studio', item.gate) ? 'studio' : 'agency']}
-                        </span>
-                      )}
-                      {hasChildren && !isLocked && (
+                      {hasChildren && (
                         <ChevronDown className={cn('ml-auto h-3.5 w-3.5 transition-transform text-neutral-500 group-hover:text-white', isOpen && 'rotate-180')} />
                       )}
                     </>
@@ -233,8 +225,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
                   const classes = cn(
                     'group relative flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors w-full text-left',
-                    isLocked ? 'text-neutral-600 cursor-not-allowed' 
-                             : isActive ? 'bg-brand/10 text-brand' : 'text-neutral-400 hover:bg-surface-2 hover:text-neutral-200'
+                    isActive ? 'bg-brand/10 text-brand' : 'text-neutral-400 hover:bg-surface-2 hover:text-neutral-200'
                   );
 
                   if (hasChildren) {
@@ -243,7 +234,6 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
                         <button
                           type="button"
                           onClick={() => {
-                            if (isLocked) return;
                             setExpanded((prev) => {
                               const next = new Set(prev);
                               next.has(item.name) ? next.delete(item.name) : next.add(item.name);
@@ -254,7 +244,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
                         >
                           {inner}
                         </button>
-                        {isOpen && !isLocked && (
+                        {isOpen && (
                           <div className="mt-1 ml-4 border-l border-border/60 pl-3 space-y-0.5">
                             {item.children!.map((child) => {
                               const [childPath, childQuery] = child.href.split('?');
@@ -440,7 +430,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
         {/* ─── PAGE CONTENT ──────────────────────────────────────────────────────── */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="p-4 lg:p-8 max-w-[1600px] mx-auto min-h-full">
+          <div className="p-4 lg:p-8 max-w-[1600px] mx-auto h-full">
             <div key={pathname} className="anim-page h-full">
               {children}
             </div>

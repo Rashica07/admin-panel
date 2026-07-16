@@ -23,6 +23,10 @@ interface TenantSite {
   name: string;
   slug: string;
   createdAt?: string;
+  status?: string;
+  paymentMethod?: string;
+  siteUrl?: string | null;
+  devUrl?: string | null;
 }
 
 function isRecentInstall(createdAt?: string): boolean {
@@ -40,6 +44,11 @@ export default function TenantWebsitesPage() {
   const [slug, setSlug] = useState('');
   const [planSelection, setPlanSelection] = useState<'starter' | 'studio' | 'agency'>('starter');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [transferTenantId, setTransferTenantId] = useState<string | null>(null);
+  const [transferEmail, setTransferEmail] = useState('');
+
   const queryClient = useQueryClient();
 
   const { data: tenants, isLoading } = useQuery({
@@ -57,6 +66,7 @@ export default function TenantWebsitesPage() {
           id: session?.user?.tenantId ?? 'own',
           name: session?.user?.name ? `${session.user.name}'s Workspace` : 'Your Workspace',
           slug: 'admin-workspace',
+          status: 'active',
         },
       ];
     },
@@ -87,6 +97,45 @@ export default function TenantWebsitesPage() {
     }
   };
 
+  const handleTransferOwnership = async () => {
+    if (!transferTenantId || !transferEmail) return;
+    setIsSubmitting(true);
+    try {
+      const pulse = createPulseClient(session?.accessToken);
+      await pulse.request('PUT', `/tenants/${transferTenantId}/transfer-ownership`, { email: transferEmail });
+      toast.success('Ownership transferred successfully');
+      setIsTransferModalOpen(false);
+      setTransferEmail('');
+      queryClient.invalidateQueries({ queryKey: ['tenants'] });
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to transfer ownership');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleImpersonate = async (tenantId: string) => {
+    try {
+      const pulse = createPulseClient(session?.accessToken);
+      const res = await pulse.request('POST', `/tenants/${tenantId}/impersonate`, {});
+      const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3002';
+      window.open(`${cmsUrl}/impersonate?token=${res.accessToken}`, '_blank');
+    } catch (err: any) {
+      toast.error('Failed to generate impersonation token');
+    }
+  };
+
+  const handleApproveCash = async (tenantId: string) => {
+    try {
+      const pulse = createPulseClient(session?.accessToken);
+      await pulse.request('POST', `/tenants/${tenantId}/approve-cash`, {});
+      toast.success('Cash payment approved');
+      queryClient.invalidateQueries({ queryKey: ['tenants'] });
+    } catch (err: any) {
+      toast.error('Failed to approve payment');
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div>
@@ -113,15 +162,21 @@ export default function TenantWebsitesPage() {
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/15 text-brand">
                     <Globe className="h-5 w-5" />
                   </div>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 flex-wrap justify-end">
                     {isRecentInstall(t.createdAt) && (
                       <span className="flex items-center gap-1 rounded-full bg-brand/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
                         <Sparkles className="h-2.5 w-2.5" /> New
                       </span>
                     )}
-                    <span className="rounded-full bg-green-500/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-green-400">
-                      Live
-                    </span>
+                    {t.status === 'active' ? (
+                      <span className="rounded-full bg-green-500/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-green-400">
+                        Live
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-yellow-500/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-yellow-400">
+                        {t.status === 'pending_payment' ? 'Pending Payment' : 'Pending Approval'}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -130,22 +185,56 @@ export default function TenantWebsitesPage() {
                   <p className="text-xs font-mono text-neutral-500 mt-1">/{t.slug}</p>
                 </div>
 
+                {isSuperAdmin && (t.status === 'pending_payment' || t.status === 'pending_approval') && (
+                  <Button 
+                    size="sm" 
+                    className="w-full bg-green-600 text-white hover:bg-green-700"
+                    onClick={() => handleApproveCash(t.id)}
+                  >
+                    Approve Cash Payment
+                  </Button>
+                )}
+
                 <div className="flex gap-2 pt-1">
-                  <a href={SITE_URL} target="_blank" rel="noopener noreferrer" className="flex-1">
-                    <Button variant="outline" size="sm" className="w-full gap-1.5">
-                      <ExternalLink className="h-3.5 w-3.5" /> Open
+                  <a href={t.devUrl || t.siteUrl || `http://localhost:21113/public/${t.slug}`} target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Button variant="outline" size="sm" className="w-full gap-1.5 border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800">
+                      <ExternalLink className="h-3.5 w-3.5" /> Site
                     </Button>
                   </a>
-                  <Link
-                    href="/dashboard/builder"
-                    onClick={() => setActiveTenant({ id: t.id, slug: t.slug, name: t.name })}
-                    className="flex-1"
-                  >
-                    <Button size="sm" className="w-full gap-1.5">
-                      <Paintbrush className="h-3.5 w-3.5" /> Edit
+                  {isSuperAdmin ? (
+                    <Button 
+                      size="sm" 
+                      className="flex-1 bg-brand text-black hover:bg-brand/90 font-medium shadow-brand/10 shadow-sm"
+                      onClick={() => handleImpersonate(t.id)}
+                    >
+                      Open CMS
                     </Button>
-                  </Link>
+                  ) : (
+                    <Button 
+                      size="sm" 
+                      className="flex-1 bg-brand text-black hover:bg-brand/90 font-medium shadow-brand/10 shadow-sm"
+                      onClick={() => {
+                        setActiveTenant({ id: t.id, slug: t.slug, name: t.name });
+                        toast.success(`Switched workspace context to ${t.name}`);
+                      }}
+                    >
+                      Manage
+                    </Button>
+                  )}
                 </div>
+                {isSuperAdmin && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2 border-dashed border-neutral-700 text-neutral-400 hover:text-white hover:border-neutral-500"
+                    onClick={() => {
+                      setTransferTenantId(t.id);
+                      setIsTransferModalOpen(true);
+                    }}
+                  >
+                    Transfer Ownership
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -280,6 +369,52 @@ export default function TenantWebsitesPage() {
           </div>
         </div>
       )}
+      {/* Transfer Ownership Modal */}
+      {isTransferModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <Card className="w-full max-w-md border-neutral-800 bg-neutral-900 shadow-2xl">
+            <CardContent className="p-6 space-y-6">
+              <div>
+                <h2 className="text-xl font-bold">Transfer Ownership</h2>
+                <p className="text-sm text-neutral-400 mt-1">
+                  Assign this tenant to a new owner email address.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>New Owner Email</Label>
+                  <Input 
+                    placeholder="client@example.com" 
+                    value={transferEmail}
+                    onChange={(e) => setTransferEmail(e.target.value)}
+                    className="bg-neutral-950 border-neutral-800"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button 
+                  variant="outline" 
+                  className="flex-1 border-neutral-800 hover:bg-neutral-800"
+                  onClick={() => setIsTransferModalOpen(false)}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  className="flex-1 bg-brand text-black hover:bg-brand/90"
+                  onClick={handleTransferOwnership}
+                  disabled={!transferEmail || isSubmitting}
+                >
+                  {isSubmitting ? 'Transferring...' : 'Transfer'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
     </div>
   );
 }

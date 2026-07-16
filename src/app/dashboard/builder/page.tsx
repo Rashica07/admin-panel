@@ -19,6 +19,8 @@ import {
   Loader2,
   AlertCircle,
   Sparkles,
+  Monitor,
+  Smartphone,
 } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────
@@ -350,6 +352,7 @@ export default function VisualBuilderPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [openSection, setOpenSection] = useState<string>('hero');
   const [saveState, setSaveState] = useState<SaveState>('idle');
+  const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
 
   // Initialize SDK and load the home page
   useEffect(() => {
@@ -407,10 +410,10 @@ export default function VisualBuilderPage() {
 
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
     setSaveState('saving');
-    
+
     debounceTimer.current = setTimeout(async () => {
       if (!pageId || !pulseRef.current) return;
-      
+
       if (isSavingRef.current) {
         // Wait until the current request finishes before firing again
         persist(pendingContentRef.current);
@@ -465,6 +468,8 @@ export default function VisualBuilderPage() {
       .filter((k) => !knownKeys.includes(k))
       .map((k): [string, string] => [k, labelize(k)]),
   ];
+
+  const previewSrc = tenant?.slug ? `http://localhost:21113?tenant=${tenant.slug}` : 'http://localhost:21113';
 
   return (
     <div className="flex h-[calc(100vh-2rem)] flex-col lg:flex-row gap-0 overflow-hidden rounded-xl border border-border/50 shadow-2xl bg-neutral-950">
@@ -535,21 +540,73 @@ export default function VisualBuilderPage() {
       </div>
 
       {/* RIGHT PANEL: Live preview */}
-      <div className="flex-1 bg-black relative hidden lg:block">
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 px-4 py-1.5 bg-neutral-900/80 backdrop-blur-md rounded-full border border-neutral-800 text-[10px] font-mono text-neutral-400 flex items-center gap-2 shadow-2xl">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-          </span>
-          LIVE PORTFOLIO PREVIEW
+      <div className="flex-1 bg-black relative hidden lg:flex lg:flex-col">
+        {/* Toolbar: viewport switcher */}
+        <div className="h-14 shrink-0 border-b border-white/5 flex items-center justify-center gap-2 relative">
+          <div className="flex bg-neutral-900 rounded-lg p-1 border border-white/5">
+            <button
+              type="button"
+              onClick={() => setViewMode('desktop')}
+              className={`p-2 rounded-md transition-all ${
+                viewMode === 'desktop' ? 'bg-neutral-800 text-white shadow-sm' : 'text-neutral-500 hover:text-white'
+              }`}
+              title="Desktop preview"
+            >
+              <Monitor className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('mobile')}
+              className={`p-2 rounded-md transition-all ${
+                viewMode === 'mobile' ? 'bg-neutral-800 text-white shadow-sm' : 'text-neutral-500 hover:text-white'
+              }`}
+              title="Mobile preview"
+            >
+              <Smartphone className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="absolute right-4 px-4 py-1.5 bg-neutral-900/80 backdrop-blur-md rounded-full border border-neutral-800 text-[10px] font-mono text-neutral-400 flex items-center gap-2 shadow-2xl">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+            </span>
+            LIVE PORTFOLIO PREVIEW
+          </div>
         </div>
 
-        <iframe
-          src={tenant?.slug ? `http://localhost:21113?tenant=${tenant.slug}` : 'http://localhost:21113'}
-          className="w-full h-full border-0"
-          title="Portfolio Live Preview"
-        />
+        {/* Preview canvas */}
+        <div className="flex-1 overflow-auto flex items-center justify-center p-6 dot-pattern">
+          <div
+            className={`bg-white shadow-2xl transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ring-1 ring-white/10 rounded-xl overflow-hidden ${
+              viewMode === 'mobile' ? 'w-[375px] h-[812px]' : 'w-full h-full'
+            }`}
+          >
+            <iframe
+              src={previewSrc}
+              className="w-full h-full border-0"
+              title="Portfolio Live Preview"
+            />
+          </div>
+        </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        .dot-pattern {
+          background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+          background-size: 20px 20px;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #333;
+          border-radius: 10px;
+        }
+      `}} />
     </div>
   );
 }
