@@ -10,7 +10,13 @@ import { formatDistanceToNow } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 
 const TYPE_META: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   page: { label: 'Page', icon: FileText, color: 'text-brand bg-brand/15' },
@@ -249,30 +255,24 @@ export default function PagesList() {
                         {formatDistanceToNow(new Date(page.updatedAt), { addSuffix: true })}
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <DropdownMenu.Root>
-                          <DropdownMenu.Trigger asChild>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity">
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
-                          </DropdownMenu.Trigger>
-                          <DropdownMenu.Portal>
-                            <DropdownMenu.Content align="end" className="w-40 z-50 rounded-xl border border-border-strong bg-surface-2 p-1.5 shadow-xl animate-in fade-in-80 zoom-in-95">
-                              <DropdownMenu.Item className="rounded-md px-2 py-1.5 text-sm text-neutral-200 hover:bg-brand/10 hover:text-brand cursor-pointer outline-none transition-colors" asChild>
-                                <Link href={`/dashboard/pages/${page.id}`}>Edit Metadata</Link>
-                              </DropdownMenu.Item>
-                              <DropdownMenu.Item className="rounded-md px-2 py-1.5 text-sm text-neutral-200 hover:bg-brand/10 hover:text-brand cursor-pointer outline-none transition-colors" asChild>
-                                <Link href={`/dashboard/builder?page=${page.id}`}>Visual Editor</Link>
-                              </DropdownMenu.Item>
-                              <div className="h-px bg-border my-1" />
-                              <DropdownMenu.Item className="rounded-md px-2 py-1.5 text-sm text-neutral-200 hover:bg-surface cursor-pointer outline-none transition-colors">
-                                Duplicate
-                              </DropdownMenu.Item>
-                              <DropdownMenu.Item className="rounded-md px-2 py-1.5 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer outline-none transition-colors">
-                                Delete
-                              </DropdownMenu.Item>
-                            </DropdownMenu.Content>
-                          </DropdownMenu.Portal>
-                        </DropdownMenu.Root>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-40">
+                            <DropdownMenuItem asChild>
+                              <Link href={`/dashboard/pages/${page.id}`}>Edit Metadata</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link href={`/dashboard/builder?page=${page.id}`}>Visual Editor</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                            <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </td>
                     </tr>
                   );

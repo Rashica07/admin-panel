@@ -40,7 +40,13 @@ import { useApiStatus } from '@/hooks/useApiStatus';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SupportWidget } from '@/components/support-widget';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
 import {
   type Plan,
   type FeatureKey,
@@ -361,8 +367,8 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
             </Button>
 
             {/* User Dropdown */}
-            <DropdownMenu.Root>
-              <DropdownMenu.Trigger asChild>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
                 <button className="ml-1 flex items-center gap-2 h-8 rounded-full pl-1 pr-3 bg-surface hover:bg-surface-2 border border-border-strong transition-colors focus:outline-none">
                   <div className="h-6 w-6 rounded-full bg-brand/20 text-brand flex items-center justify-center text-[10px] font-bold uppercase border border-brand/30">
                     {session?.user?.name?.charAt(0) || 'U'}
@@ -371,60 +377,53 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
                     {session?.user?.name?.split(' ')[0]}
                   </span>
                 </button>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content align="end" sideOffset={8} className="w-56 z-50 rounded-xl border border-border-strong bg-surface-2 p-1.5 shadow-xl animate-in fade-in-80 zoom-in-95">
-                  <div className="px-2 py-2 mb-1 border-b border-border">
-                    <p className="text-sm font-semibold text-white truncate">{session?.user?.name}</p>
-                    <p className="text-xs text-neutral-400 truncate">{session?.user?.email}</p>
-                    <div className="mt-2 flex items-center gap-1.5">
-                      <span className="rounded bg-brand/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-brand border border-brand/20">
-                        {role.replace('_', ' ')}
-                      </span>
-                      <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-neutral-400">
-                        {PLAN_LABEL[plan]}
-                      </span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" sideOffset={8} className="w-56">
+                <div className="px-2 py-2 mb-1 border-b border-border">
+                  <p className="text-sm font-semibold text-white truncate">{session?.user?.name}</p>
+                  <p className="text-xs text-neutral-400 truncate">{session?.user?.email}</p>
+                  <div className="mt-2 flex items-center gap-1.5">
+                    <span className="rounded bg-brand/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-brand border border-brand/20">
+                      {role.replace('_', ' ')}
+                    </span>
+                    <span className="rounded bg-neutral-800 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-neutral-400">
+                      {PLAN_LABEL[plan]}
+                    </span>
+                  </div>
+                </div>
+
+                {isSuperAdmin && (
+                  <div className="px-2 py-1 mb-1 border-b border-border">
+                    <p className="text-[10px] font-bold text-neutral-500 uppercase mb-1">Preview Mode</p>
+                    <div className="grid grid-cols-2 gap-1">
+                      {PREVIEW_PLANS.map((m) => (
+                        <button
+                          key={m.label}
+                          onClick={() => setPreviewPlan(m.value)}
+                          className={cn(
+                            'text-left rounded-md px-2 py-1.5 text-[10px] font-medium transition-colors',
+                            previewPlan === m.value ? 'bg-brand/15 text-brand font-bold' : 'text-neutral-400 hover:bg-neutral-800'
+                          )}
+                        >
+                          {m.label}
+                        </button>
+                      ))}
                     </div>
                   </div>
-                  
-                  {isSuperAdmin && (
-                    <div className="px-2 py-1 mb-1 border-b border-border">
-                      <p className="text-[10px] font-bold text-neutral-500 uppercase mb-1">Preview Mode</p>
-                      <div className="grid grid-cols-2 gap-1">
-                        {PREVIEW_PLANS.map((m) => (
-                          <button
-                            key={m.label}
-                            onClick={() => setPreviewPlan(m.value)}
-                            className={cn(
-                              'text-left rounded-md px-2 py-1.5 text-[10px] font-medium transition-colors',
-                              previewPlan === m.value ? 'bg-brand/15 text-brand font-bold' : 'text-neutral-400 hover:bg-neutral-800'
-                            )}
-                          >
-                            {m.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                )}
 
-                  <DropdownMenu.Item className="rounded-md px-2 py-2 text-sm text-neutral-300 hover:bg-brand/10 hover:text-brand cursor-pointer outline-none transition-colors" asChild>
-                    <Link href="/dashboard/settings">Manage Account</Link>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item 
-                    className="flex items-center justify-between rounded-md px-2 py-2 text-sm text-neutral-300 hover:bg-neutral-800 cursor-pointer outline-none transition-colors"
-                  >
-                    Dark Mode <Moon className="h-3.5 w-3.5 text-neutral-500" />
-                  </DropdownMenu.Item>
-                  <div className="h-px bg-border my-1" />
-                  <DropdownMenu.Item 
-                    className="flex items-center gap-2 rounded-md px-2 py-2 text-sm text-red-400 hover:bg-red-500/10 cursor-pointer outline-none transition-colors"
-                    onClick={handleLogout}
-                  >
-                    <LogOut className="h-4 w-4" /> Log out
-                  </DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/settings">Manage Account</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex items-center justify-between">
+                  Dark Mode <Moon className="h-3.5 w-3.5 text-neutral-500" />
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" className="flex items-center gap-2" onClick={handleLogout}>
+                  <LogOut className="h-4 w-4" /> Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
 
