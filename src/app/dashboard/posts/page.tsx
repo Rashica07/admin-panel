@@ -10,7 +10,6 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 export default function PostsPage() {
   const { data: pages, isLoading } = usePages();

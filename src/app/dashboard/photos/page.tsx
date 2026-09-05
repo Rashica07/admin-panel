@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Image as ImageIcon, Plus, Trash2, Copy, ExternalLink, Link as LinkIcon, Loader2, UploadCloud } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
-import * as Dialog from '@radix-ui/react-dialog';
+import * as RadixDialog from '@radix-ui/react-dialog';
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
 export default function PhotosPage() {
@@ -75,56 +76,51 @@ export default function PhotosPage() {
           <p className="text-sm text-neutral-400 mt-2">Manage your images, videos, and uploaded assets.</p>
         </div>
         
-        <Dialog.Root open={isAddOpen} onOpenChange={setIsAddOpen}>
-          <Dialog.Trigger asChild>
+        <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+          <DialogTrigger asChild>
             <Button className="bg-brand text-black hover:bg-brand-hover gap-2 rounded-full px-5 font-semibold shadow-sm">
               <Plus className="h-4 w-4" /> Add Asset
             </Button>
-          </Dialog.Trigger>
-          <Dialog.Portal>
-            <Dialog.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-            <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border-strong bg-surface p-0 shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-2xl md:w-full overflow-hidden">
-              <div className="bg-brand/10 border-b border-border/50 p-6 flex flex-col items-center justify-center text-center">
-                <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center mb-4">
-                  <UploadCloud className="h-6 w-6 text-brand" />
-                </div>
-                <Dialog.Title className="text-xl font-bold text-white">Add New Asset</Dialog.Title>
-                <Dialog.Description className="text-sm text-neutral-400 mt-1">Provide a public URL and filename to register a new asset.</Dialog.Description>
+          </DialogTrigger>
+          <DialogContent className="max-w-lg gap-0 p-0 overflow-hidden">
+            <div className="bg-brand/10 border-b border-border/50 p-6 flex flex-col items-center justify-center text-center">
+              <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center mb-4">
+                <UploadCloud className="h-6 w-6 text-brand" />
               </div>
-              <form onSubmit={handleAddPhoto} className="p-6 space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="url" className="text-sm font-medium text-neutral-300">Image URL</Label>
-                  <Input 
-                    id="url" 
-                    placeholder="https://example.com/image.jpg" 
-                    value={newPhotoUrl}
-                    onChange={(e) => setNewPhotoUrl(e.target.value)}
-                    className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm font-mono"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="filename" className="text-sm font-medium text-neutral-300">Filename</Label>
-                  <Input 
-                    id="filename" 
-                    placeholder="hero-banner.jpg" 
-                    value={newPhotoName}
-                    onChange={(e) => setNewPhotoName(e.target.value)}
-                    className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm"
-                  />
-                </div>
-                <div className="flex justify-end gap-3 pt-4">
-                  <Dialog.Close asChild>
-                    <Button type="button" variant="ghost" className="rounded-full px-6 hover:bg-neutral-800 text-neutral-300">Cancel</Button>
-                  </Dialog.Close>
-                  <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-black hover:bg-brand-hover font-semibold">
-                    {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
-                    Add Asset
-                  </Button>
-                </div>
-              </form>
-            </Dialog.Content>
-          </Dialog.Portal>
-        </Dialog.Root>
+              <DialogTitle className="text-xl font-bold text-white">Add New Asset</DialogTitle>
+              <DialogDescription className="mt-1">Provide a public URL and filename to register a new asset.</DialogDescription>
+            </div>
+            <form onSubmit={handleAddPhoto} className="p-6 space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="url" className="text-sm font-medium text-neutral-300">Image URL</Label>
+                <Input
+                  id="url"
+                  placeholder="https://example.com/image.jpg"
+                  value={newPhotoUrl}
+                  onChange={(e) => setNewPhotoUrl(e.target.value)}
+                  className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm font-mono"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="filename" className="text-sm font-medium text-neutral-300">Filename</Label>
+                <Input
+                  id="filename"
+                  placeholder="hero-banner.jpg"
+                  value={newPhotoName}
+                  onChange={(e) => setNewPhotoName(e.target.value)}
+                  className="h-11 bg-surface-2 border-border-strong rounded-lg focus-visible:ring-brand px-4 text-sm"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <Button type="button" variant="ghost" className="rounded-full px-6 hover:bg-neutral-800 text-neutral-300" onClick={() => setIsAddOpen(false)}>Cancel</Button>
+                <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-black hover:bg-brand-hover font-semibold">
+                  {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
+                  Add Asset
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {isLoading ? (
@@ -193,21 +189,21 @@ export default function PhotosPage() {
       )}
 
       {/* Details Drawer / Modal */}
-      <Dialog.Root open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-          <Dialog.Content className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md border-l border-border bg-surface shadow-2xl duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:w-[400px] flex flex-col">
+      <RadixDialog.Root open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
+        <RadixDialog.Portal>
+          <RadixDialog.Overlay className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <RadixDialog.Content className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md border-l border-border bg-surface shadow-2xl duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:w-[400px] flex flex-col">
             {selectedPhoto && (
               <>
                 <div className="flex items-center justify-between p-6 border-b border-border/50 shrink-0">
-                  <Dialog.Title className="text-lg font-bold text-white">Asset Details</Dialog.Title>
-                  <Dialog.Close asChild>
+                  <RadixDialog.Title className="text-lg font-bold text-white">Asset Details</RadixDialog.Title>
+                  <RadixDialog.Close asChild>
                     <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-neutral-800">
                       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-neutral-400"><path d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg>
                     </Button>
-                  </Dialog.Close>
+                  </RadixDialog.Close>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto p-6 space-y-8">
                   <div className="bg-surface-2 border border-border-strong rounded-2xl overflow-hidden aspect-video flex items-center justify-center">
                     <img 
@@ -272,9 +268,9 @@ export default function PhotosPage() {
                 </div>
               </>
             )}
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+          </RadixDialog.Content>
+        </RadixDialog.Portal>
+      </RadixDialog.Root>
 
     </div>
   );

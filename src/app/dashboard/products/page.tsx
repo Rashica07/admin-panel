@@ -6,11 +6,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Tag, Search, ArrowRight, Package, Image as ImageIcon, X } from 'lucide-react';
+import { Plus, Tag, Search, ArrowRight, Package, Image as ImageIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlanGate } from '@/components/plan-gate';
-import * as Dialog from '@radix-ui/react-dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
 export default function ProductsPage() {
@@ -148,76 +148,59 @@ export default function ProductsPage() {
         </Card>
       </div>
 
-      <Dialog.Root open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
-        <Dialog.Portal>
-          <Dialog.Overlay className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
-          <Dialog.Content className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-neutral-800 bg-neutral-950 p-6 shadow-2xl duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-2xl">
-            <div className="flex items-center justify-between">
-              <Dialog.Title className="text-lg font-semibold tracking-tight text-white">
-                Add New Product
-              </Dialog.Title>
-              <Dialog.Close asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0 rounded-full hover:bg-neutral-800">
-                  <X className="h-4 w-4" />
-                </Button>
-              </Dialog.Close>
-            </div>
-            
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="title" className="text-xs text-neutral-400">Product Title</Label>
-                <Input 
-                  id="title" 
-                  value={newProduct.title}
-                  onChange={e => setNewProduct({...newProduct, title: e.target.value})}
-                  className="bg-neutral-900 border-neutral-800 text-white placeholder:text-neutral-600" 
-                  placeholder="e.g. Vintage Denim Jacket" 
-                />
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="price" className="text-xs text-neutral-400">Price (€)</Label>
-                  <Input 
-                    id="price" 
-                    type="number"
-                    value={newProduct.price || ''}
-                    onChange={e => setNewProduct({...newProduct, price: parseFloat(e.target.value) || 0})}
-                    className="bg-neutral-900 border-neutral-800 text-white" 
-                    placeholder="0.00" 
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="inventory" className="text-xs text-neutral-400">Inventory Quantity</Label>
-                  <Input 
-                    id="inventory" 
-                    type="number"
-                    value={newProduct.inventoryQty || ''}
-                    onChange={e => setNewProduct({...newProduct, inventoryQty: parseInt(e.target.value) || 0})}
-                    className="bg-neutral-900 border-neutral-800 text-white" 
-                    placeholder="0" 
-                  />
-                </div>
-              </div>
+      <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+        <DialogContent>
+          <DialogTitle>Add New Product</DialogTitle>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title" className="text-xs text-neutral-400">Product Title</Label>
+              <Input
+                id="title"
+                value={newProduct.title}
+                onChange={e => setNewProduct({...newProduct, title: e.target.value})}
+                placeholder="e.g. Vintage Denim Jacket"
+              />
             </div>
 
-            <div className="flex justify-end gap-3 mt-2">
-              <Dialog.Close asChild>
-                <Button variant="ghost" className="text-neutral-400 hover:text-white hover:bg-neutral-800">
-                  Cancel
-                </Button>
-              </Dialog.Close>
-              <Button 
-                onClick={() => createProduct.mutate(newProduct)} 
-                disabled={!newProduct.title || createProduct.isPending}
-                className="bg-brand text-black hover:bg-brand/90 font-medium"
-              >
-                {createProduct.isPending ? 'Creating...' : 'Create Draft'}
-              </Button>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="price" className="text-xs text-neutral-400">Price (€)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  value={newProduct.price || ''}
+                  onChange={e => setNewProduct({...newProduct, price: parseFloat(e.target.value) || 0})}
+                  placeholder="0.00"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="inventory" className="text-xs text-neutral-400">Inventory Quantity</Label>
+                <Input
+                  id="inventory"
+                  type="number"
+                  value={newProduct.inventoryQty || ''}
+                  onChange={e => setNewProduct({...newProduct, inventoryQty: parseInt(e.target.value) || 0})}
+                  placeholder="0"
+                />
+              </div>
             </div>
-          </Dialog.Content>
-        </Dialog.Portal>
-      </Dialog.Root>
+          </div>
+
+          <div className="flex justify-end gap-3 mt-2">
+            <Button variant="ghost" className="text-neutral-400 hover:text-white hover:bg-neutral-800" onClick={() => setIsAddModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => createProduct.mutate(newProduct)}
+              disabled={!newProduct.title || createProduct.isPending}
+              className="bg-brand text-black hover:bg-brand/90 font-medium"
+            >
+              {createProduct.isPending ? 'Creating...' : 'Create Draft'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
     </PlanGate>
   );
