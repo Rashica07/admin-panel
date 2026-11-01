@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { DemoEnter } from '@/components/demo-enter';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 
 const registerSchema = z.object({
@@ -24,6 +25,7 @@ const registerSchema = z.object({
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
+  if (process.env.NEXT_PUBLIC_DEMO_MODE !== 'false') return <DemoEnter />; // eslint-disable-line react-hooks/rules-of-hooks
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 

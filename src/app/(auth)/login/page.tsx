@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
+import { DemoEnter } from '@/components/demo-enter';
 
 const loginSchema = z.object({
   email: z.string().min(1, 'Email or Username is required'),
@@ -109,7 +110,10 @@ function LoginForm() {
   );
 }
 
+const DEMO = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+
 export default function LoginPage() {
+  if (DEMO) return <DemoEnter />;
   return (
     <Suspense fallback={<div className="flex h-64 items-center justify-center">Loading...</div>}>
       <LoginForm />

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { createPulseClient } from '@/lib/novus-pulse-client';
@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { defaultPortfolioContent } from '@/lib/default-content';
+import { renderPreviewHtml } from '@/demo/site-preview';
 import { useUIStore } from '@/store/useStore';
 import {
   ChevronRight,
@@ -452,6 +453,8 @@ export default function VisualBuilderPage() {
     toast.success(`"${labelize(key)}" restored to defaults`);
   };
 
+  const previewHtml = useMemo(() => (content ? renderPreviewHtml(content) : ''), [content]);
+
   if (isLoading || !content) {
     return (
       <div className="flex h-[calc(100vh-8rem)] items-center justify-center text-neutral-400 gap-2">
@@ -582,11 +585,20 @@ export default function VisualBuilderPage() {
               viewMode === 'mobile' ? 'w-[375px] h-[812px]' : 'w-full h-full'
             }`}
           >
-            <iframe
-              src={previewSrc}
-              className="w-full h-full border-0"
-              title="Portfolio Live Preview"
-            />
+            {process.env.NEXT_PUBLIC_DEMO_MODE !== 'false' ? (
+              <iframe
+                srcDoc={previewHtml}
+                sandbox=""
+                className="w-full h-full border-0"
+                title="Portfolio Live Preview"
+              />
+            ) : (
+              <iframe
+                src={previewSrc}
+                className="w-full h-full border-0"
+                title="Portfolio Live Preview"
+              />
+            )}
           </div>
         </div>
       </div>

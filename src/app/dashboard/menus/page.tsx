@@ -30,7 +30,7 @@ interface Menu {
 
 export default function MenusPage() {
   const { data: session } = useSession();
-  const { actualPlan } = usePlan();
+  const { realPlan } = usePlan();
   const queryClient = useQueryClient();
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -79,8 +79,8 @@ export default function MenusPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-semibold">All Menus</h3>
-                <Button variant="ghost" size="icon" onClick={() => setIsCreating(true)} disabled={actualPlan === 'starter'}>
-                  {actualPlan === 'starter' ? <Lock className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                <Button variant="ghost" size="icon" onClick={() => setIsCreating(true)} disabled={realPlan === 'starter'}>
+                  {realPlan === 'starter' ? <Lock className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                 </Button>
               </div>
 
@@ -154,7 +154,7 @@ export default function MenusPage() {
 
 function MenuBuilder({ menu }: { menu: Menu }) {
   const { data: session } = useSession();
-  const { actualPlan } = usePlan();
+  const { realPlan } = usePlan();
   const queryClient = useQueryClient();
   const [items, setItems] = useState<MenuItem[]>(menu.items || []);
   const [saving, setSaving] = useState(false);
@@ -201,8 +201,8 @@ function MenuBuilder({ menu }: { menu: Menu }) {
             <CardTitle>{menu.name}</CardTitle>
             <p className="text-xs text-neutral-400 font-mono mt-1">slug: {menu.slug}</p>
           </div>
-          <Button onClick={saveMenu} disabled={saving || actualPlan === 'starter'} className="gap-2">
-            {actualPlan === 'starter' ? <><Lock className="h-4 w-4" /> Upgrade to Studio</> : <><Check className="h-4 w-4" /> Save Menu</>}
+          <Button onClick={saveMenu} disabled={saving || realPlan === 'starter'} className="gap-2">
+            {realPlan === 'starter' ? <><Lock className="h-4 w-4" /> Upgrade to Studio</> : <><Check className="h-4 w-4" /> Save Menu</>}
           </Button>
         </div>
       </CardHeader>
@@ -244,8 +244,8 @@ function MenuBuilder({ menu }: { menu: Menu }) {
             </div>
           )}
 
-          <Button variant="outline" className="w-full border-dashed gap-2 text-neutral-400 hover:text-white disabled:opacity-50" onClick={addItem} disabled={actualPlan === 'starter'}>
-            {actualPlan === 'starter' ? <Lock className="h-4 w-4" /> : <Plus className="h-4 w-4" />} Add Link
+          <Button variant="outline" className="w-full border-dashed gap-2 text-neutral-400 hover:text-white disabled:opacity-50" onClick={addItem} disabled={realPlan === 'starter'}>
+            {realPlan === 'starter' ? <Lock className="h-4 w-4" /> : <Plus className="h-4 w-4" />} Add Link
           </Button>
         </div>
       </CardContent>

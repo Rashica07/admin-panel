@@ -76,7 +76,7 @@ const RADIUS_OPTIONS = ['0px', '4px', '8px', '12px', '24px', '9999px'];
 
 export default function ThemesPage() {
   const { data: session } = useSession();
-  const { actualPlan } = usePlan();
+  const { realPlan } = usePlan();
   const [theme, setTheme] = useState(DEFAULT_THEME);
   const [saving, setSaving] = useState(false);
   const [activeThemeName, setActiveThemeName] = useState('Novus Default');
@@ -300,9 +300,9 @@ export default function ThemesPage() {
                       variant="outline" 
                       className="w-full border-border-strong text-white hover:bg-surface-2 disabled:opacity-50"
                       onClick={() => saveTheme({ ...DEFAULT_THEME, colors: { ...DEFAULT_THEME.colors, ...t.colors } }, t.name)}
-                      disabled={saving || actualPlan === 'starter'}
+                      disabled={saving || realPlan === 'starter'}
                     >
-                      {actualPlan === 'starter' ? <><Lock className="h-4 w-4 mr-2" /> Upgrade to Studio</> : 'Add'}
+                      {realPlan === 'starter' ? <><Lock className="h-4 w-4 mr-2" /> Upgrade to Studio</> : 'Add'}
                     </Button>
                   </div>
                 </div>

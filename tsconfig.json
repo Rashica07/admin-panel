@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@kiq/novus-pulse": ["./src/vendor/novus-pulse/index.ts"],
+      "@rashica07/novus-pulse": ["./src/vendor/novus-pulse/index.ts"]
     }
   },
   "include": [

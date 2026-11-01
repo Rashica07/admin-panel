@@ -117,7 +117,7 @@ export default function TenantWebsitesPage() {
   const handleImpersonate = async (tenantId: string) => {
     try {
       const pulse = createPulseClient(session?.accessToken);
-      const res = await pulse.request('POST', `/tenants/${tenantId}/impersonate`, {});
+      const res = await pulse.request<{ accessToken: string }>('POST', `/tenants/${tenantId}/impersonate`, {});
       const cmsUrl = process.env.NEXT_PUBLIC_CMS_URL || 'http://localhost:3002';
       window.open(`${cmsUrl}/impersonate?token=${res.accessToken}`, '_blank');
     } catch (err: any) {
