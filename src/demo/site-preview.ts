@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- renders the editor's free-form content JSON; shape varies by site. */
 /**
  * Demo-only live preview for the Visual Editor. In the real product the
  * preview is an iframe of the tenant's own website; in demo mode there is no

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- the demo store holds schemaless JSON records that mirror API payloads; typing every shape would duplicate the SDK types without adding safety to a demo-only fake. */
 /**
  * Demo seed data — one fictional business ("Meridian Roasters", a specialty
  * coffee roaster) with enough content in every module that each dashboard
@@ -48,7 +49,6 @@ const iso = (offsetMs: number) => new Date(Date.now() + offsetMs).toISOString();
 export type DemoDb = Record<string, any>;
 
 export function buildSeed(): DemoDb {
-  const now = Date.now();
 
   // ── Tenant & users ────────────────────────────────────────
   const tenant = {

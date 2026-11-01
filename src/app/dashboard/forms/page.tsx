@@ -70,15 +70,14 @@ export default function FormsInboxPage() {
         {/* Header */}
         <div className="mb-8 shrink-0 flex items-end justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-              <Mail className="h-7 w-7 text-brand" /> Forms Inbox
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2"> Forms Inbox
             </h1>
             <p className="text-sm text-neutral-400 mt-2">
               View and manage submissions from your storefront's contact and intake forms.
             </p>
           </div>
           <div className="flex items-center gap-3 text-sm font-medium">
-            <span className={cn("flex items-center gap-2 px-3 py-1.5 rounded-full", unreadCount > 0 ? "bg-brand/10 text-brand border border-brand/20" : "bg-surface-2 text-neutral-400 border border-border")}>
+            <span className={cn("flex items-center gap-2 px-3 py-1.5 rounded-full", unreadCount > 0 ? "bg-brand/10 text-brand-fg border border-border-strong" : "bg-surface-2 text-neutral-400 border border-border")}>
               {unreadCount > 0 && <span className="h-2 w-2 rounded-full bg-brand animate-pulse" />}
               {unreadCount} Unread
             </span>
@@ -123,7 +122,7 @@ export default function FormsInboxPage() {
                         >
                           {/* Active border indicator */}
                           {isActive && (
-                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand rounded-r-full shadow-[0_0_8px_rgba(255,140,0,0.5)]" />
+                            <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand rounded-r-full" />
                           )}
 
                           <div className="mt-1 shrink-0">
@@ -132,20 +131,20 @@ export default function FormsInboxPage() {
                             ) : (
                               <div className="relative flex h-4 w-4 items-center justify-center">
                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand opacity-20"></span>
-                                <Circle className="relative h-4 w-4 text-brand fill-brand" />
+                                <Circle className="relative h-4 w-4 text-brand-fg fill-brand" />
                               </div>
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between mb-1">
-                              <p className={cn("text-sm truncate pr-2 transition-colors", !sub.read ? "font-bold text-white" : "font-semibold text-neutral-300", isActive && "text-brand")}>
+                              <p className={cn("text-sm truncate pr-2 transition-colors", !sub.read ? "font-bold text-white" : "font-semibold text-neutral-300", isActive && "text-brand-fg")}>
                                 {sub.data.name || sub.data.email || 'Anonymous Submission'}
                               </p>
-                              <span className={cn("text-[10px] shrink-0 whitespace-nowrap", !sub.read ? "text-brand font-medium" : "text-neutral-500")}>
+                              <span className={cn("text-[10px] shrink-0 whitespace-nowrap", !sub.read ? "text-brand-fg font-medium" : "text-neutral-500")}>
                                 {formatDistanceToNow(new Date(sub.createdAt), { addSuffix: true }).replace('about ', '')}
                               </span>
                             </div>
-                            <p className={cn("text-[11px] font-mono mb-1 uppercase tracking-wider", isActive ? "text-brand/80" : "text-neutral-500")}>
+                            <p className={cn("text-[11px] font-mono mb-1 uppercase tracking-wider", isActive ? "text-brand-fg/80" : "text-neutral-500")}>
                               {sub.formName}
                             </p>
                             <p className={cn("text-xs truncate", !sub.read ? "text-neutral-300 font-medium" : "text-neutral-500")}>
@@ -186,7 +185,7 @@ export default function FormsInboxPage() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
                         <div className="flex items-center gap-3 mb-2">
-                          <span className="bg-brand/10 text-brand text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-brand/20">
+                          <span className="bg-brand/10 text-brand-fg text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-border-strong">
                             {activeSub.formName}
                           </span>
                           <span className="flex items-center gap-1.5 text-xs text-neutral-500 font-medium">
@@ -240,7 +239,7 @@ export default function FormsInboxPage() {
                             if (key === 'message') return null; // already shown above
                             return (
                               <div key={key} className="bg-surface-2/30 border border-border rounded-xl p-4 transition-colors hover:border-neutral-700">
-                                <dt className="text-[10px] text-brand uppercase tracking-wider mb-2 font-bold">{key}</dt>
+                                <dt className="text-[10px] text-brand-fg uppercase tracking-wider mb-2 font-bold">{key}</dt>
                                 <dd className="text-sm font-medium text-neutral-200 break-words">
                                   {typeof val === 'object' ? JSON.stringify(val) : String(val)}
                                 </dd>

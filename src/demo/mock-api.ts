@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- the demo store holds schemaless JSON records that mirror API payloads; typing every shape would duplicate the SDK types without adding safety to a demo-only fake. */
 /**
  * In-browser fake of the Novus Pulse REST API.
  *

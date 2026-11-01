@@ -70,22 +70,21 @@ export default function PhotosPage() {
       
       <div className="flex items-center justify-between mb-8 shrink-0">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <ImageIcon className="h-7 w-7 text-brand" /> Media Library
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2"> Media Library
           </h1>
           <p className="text-sm text-neutral-400 mt-2">Manage your images, videos, and uploaded assets.</p>
         </div>
         
         <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-brand text-black hover:bg-brand-hover gap-2 rounded-full px-5 font-semibold shadow-sm">
+            <Button className="bg-brand text-brand-foreground hover:bg-brand-hover gap-2 rounded-full px-5 font-semibold shadow-sm">
               <Plus className="h-4 w-4" /> Add Asset
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-lg gap-0 p-0 overflow-hidden">
             <div className="bg-brand/10 border-b border-border/50 p-6 flex flex-col items-center justify-center text-center">
-              <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/30 flex items-center justify-center mb-4">
-                <UploadCloud className="h-6 w-6 text-brand" />
+              <div className="h-14 w-14 rounded-full bg-brand/20 border border-brand/40 flex items-center justify-center mb-4">
+                <UploadCloud className="h-6 w-6 text-brand-fg" />
               </div>
               <DialogTitle className="text-xl font-bold text-white">Add New Asset</DialogTitle>
               <DialogDescription className="mt-1">Provide a public URL and filename to register a new asset.</DialogDescription>
@@ -113,7 +112,7 @@ export default function PhotosPage() {
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 <Button type="button" variant="ghost" className="rounded-full px-6 hover:bg-neutral-800 text-neutral-300" onClick={() => setIsAddOpen(false)}>Cancel</Button>
-                <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-black hover:bg-brand-hover font-semibold">
+                <Button type="submit" disabled={isUploading} className="rounded-full px-8 bg-brand text-brand-foreground hover:bg-brand-hover font-semibold">
                   {isUploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plus className="mr-2 h-4 w-4" />}
                   Add Asset
                 </Button>
@@ -178,7 +177,7 @@ export default function PhotosPage() {
                   </div>
                   
                   <div className="translate-y-[10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 delay-75">
-                    <p className="text-sm font-medium text-white truncate drop-shadow-md">{photo.filename}</p>
+                    <p className="text-sm font-medium text-white truncate">{photo.filename}</p>
                     <p className="text-[10px] text-neutral-300 mt-1 font-mono uppercase tracking-widest">{formatDistanceToNow(new Date(photo.createdAt), { addSuffix: true })}</p>
                   </div>
                 </div>

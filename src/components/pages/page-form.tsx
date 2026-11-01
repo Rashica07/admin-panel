@@ -182,7 +182,7 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                     <input
                       type="checkbox"
                       id="inStock"
-                      className="h-4 w-4 rounded border-border-strong bg-surface-2 text-brand focus:ring-brand accent-brand cursor-pointer"
+                      className="h-4 w-4 rounded border-border-strong bg-surface-2 text-brand-fg focus:ring-brand accent-brand cursor-pointer"
                       {...register('inStock')}
                     />
                     <Label htmlFor="inStock" className="font-normal cursor-pointer text-neutral-200">
@@ -209,7 +209,7 @@ export function PageForm({ defaultValues, onSubmit, isLoading }: PageFormProps) 
                   <button
                     type="button"
                     onClick={() => appendVariant({ name: 'Size', value: '', stock: 0 })}
-                    className="flex items-center gap-1 text-sm text-brand font-medium hover:text-brand-hover transition-colors"
+                    className="flex items-center gap-1 text-sm text-brand-fg font-medium hover:text-brand-hover transition-colors"
                   >
                     <Plus className="h-4 w-4" /> Add options like size or color
                   </button>

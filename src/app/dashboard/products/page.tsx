@@ -58,15 +58,14 @@ export default function ProductsPage() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-              <Tag className="h-7 w-7 text-brand" /> Products
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2"> Products
             </h1>
             <p className="text-sm text-neutral-400 mt-1">
               Manage your inventory, pricing, and catalog.
             </p>
           </div>
           <Button 
-            className="gap-2 bg-brand text-black hover:bg-brand/90 font-semibold shadow-brand/20 shadow-lg"
+            className="gap-2 bg-brand text-brand-foreground hover:bg-brand/90 font-semibold shadow-lg"
             onClick={() => setIsAddModalOpen(true)}
           >
             <Plus className="h-4 w-4" /> Add Product
@@ -104,7 +103,7 @@ export default function ProductsPage() {
                   {search ? 'Try adjusting your search terms.' : 'You haven\'t added any products yet. Create your first product to start selling.'}
                 </p>
                 {!search && (
-                  <Button className="mt-6 bg-white text-black hover:bg-neutral-200" onClick={() => setIsAddModalOpen(true)}>
+                  <Button className="mt-6 bg-ivory text-[#1a1a1d] hover:bg-neutral-100" onClick={() => setIsAddModalOpen(true)}>
                     <Plus className="h-4 w-4 mr-2" /> Add your first product
                   </Button>
                 )}
@@ -124,9 +123,9 @@ export default function ProductsPage() {
                     <p className="text-xs text-neutral-500 truncate">{product.inventoryQty} in stock</p>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium text-white">€{product.price}</div>
+                    <div className="font-mono text-[13px] tabular-nums text-foreground">€{Number(product.price).toFixed(2)}</div>
                     {product.compareAtPrice && (
-                      <div className="text-[10px] text-neutral-500 line-through">€{product.compareAtPrice}</div>
+                      <div className="font-mono text-[11px] tabular-nums text-neutral-500 line-through">€{Number(product.compareAtPrice).toFixed(2)}</div>
                     )}
                   </div>
                   <div className="pl-4">
@@ -194,7 +193,7 @@ export default function ProductsPage() {
             <Button
               onClick={() => createProduct.mutate(newProduct)}
               disabled={!newProduct.title || createProduct.isPending}
-              className="bg-brand text-black hover:bg-brand/90 font-medium"
+              className="bg-brand text-brand-foreground hover:bg-brand/90 font-medium"
             >
               {createProduct.isPending ? 'Creating...' : 'Create Draft'}
             </Button>

@@ -9,11 +9,11 @@ export default function AppsSettingsPage() {
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="pb-4 border-b border-border/50 text-center py-10">
           <div className="mx-auto bg-brand/10 w-16 h-16 rounded-2xl flex items-center justify-center mb-4">
-            <Blocks className="h-8 w-8 text-brand" />
+            <Blocks className="h-8 w-8 text-brand-fg" />
           </div>
           <CardTitle className="text-xl font-bold">Apps & Integrations</CardTitle>
           <CardDescription className="text-neutral-400 mt-2 max-w-sm mx-auto">
-            Connect third-party tools to supercharge your store. The Novus App Store is coming soon.
+            Connect third-party tools to supercharge your store. An integrations directory is not available yet.
           </CardDescription>
         </CardHeader>
       </Card>

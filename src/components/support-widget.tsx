@@ -27,7 +27,7 @@ export function SupportWidget() {
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { from: 'bot', text: "Hey! I'm your Novus assistant. How can I help?" },
+    { from: 'bot', text: "Hey! I'm your OMNI assistant. How can I help?" },
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -63,24 +63,26 @@ export function SupportWidget() {
         type="button"
         onClick={() => setOpen(!open)}
         className={cn(
-          'fixed bottom-5 right-5 z-[60] flex items-center justify-center rounded-full shadow-2xl transition-all h-[52px] w-[52px]',
-          open ? 'bg-neutral-800 text-white rotate-90' : 'bg-brand text-black hover:scale-105'
+          'fixed bottom-4 right-4 z-[60] flex h-9 items-center justify-center gap-1.5 rounded-md border border-border-strong px-3 text-[13px] shadow-[0_6px_20px_-8px_rgba(0,0,0,0.7)] transition-colors',
+          open ? 'bg-surface-3 text-foreground' : 'bg-surface-2 text-neutral-300 hover:bg-surface-3 hover:text-foreground'
         )}
-        aria-label="Chat support"
+        aria-label={open ? 'Close help' : 'Open help'}
+        aria-expanded={open}
       >
-        {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
+        {open ? <X className="h-3.5 w-3.5" /> : <MessageCircle className="h-3.5 w-3.5" />}
+        <span className="hidden sm:inline">{open ? 'Close' : 'Help'}</span>
       </button>
 
       {/* Panel */}
       {open && (
-        <div className="fixed bottom-24 right-5 z-[60] flex h-[480px] w-[360px] max-w-[calc(100vw-2.5rem)] flex-col overflow-hidden rounded-2xl border border-border bg-neutral-950 shadow-2xl">
+        <div className="fixed bottom-16 right-4 z-[60] flex h-[460px] w-[360px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-lg border border-border-strong bg-surface shadow-[0_16px_40px_-12px_rgba(0,0,0,0.8)]">
           {/* Header */}
           <div className="flex items-center gap-3 border-b border-border bg-neutral-900/70 px-4 py-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand/20 text-brand">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand/20 text-brand-fg">
               <Bot className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">Novus Assistant</p>
+              <p className="text-sm font-semibold text-white">OMNI Assistant</p>
               <p className="text-[10px] text-neutral-500 flex items-center gap-1.5">
                 <span className="h-1.5 w-1.5 rounded-full bg-green-500 inline-block" />
                 Online
@@ -96,7 +98,7 @@ export function SupportWidget() {
                   className={cn(
                     'max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed',
                     m.from === 'user'
-                      ? 'bg-brand text-black rounded-br-md'
+                      ? 'bg-brand text-brand-foreground rounded-br-md'
                       : 'bg-neutral-800/80 text-neutral-200 rounded-bl-md'
                   )}
                 >
@@ -126,7 +128,7 @@ export function SupportWidget() {
                     key={t}
                     type="button"
                     onClick={() => send(t)}
-                    className="rounded-full border border-border bg-neutral-900 px-3 py-1.5 text-xs text-neutral-300 hover:border-brand/40 hover:text-brand transition-colors"
+                    className="rounded-full border border-border bg-neutral-900 px-3 py-1.5 text-xs text-neutral-300 hover:border-brand/40 hover:text-brand-fg transition-colors"
                   >
                     {t}
                   </button>
@@ -151,7 +153,7 @@ export function SupportWidget() {
             />
             <button
               type="submit"
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand text-black hover:bg-brand/90 transition-colors disabled:opacity-50"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand text-brand-foreground hover:bg-brand/90 transition-colors disabled:opacity-50"
               disabled={!input.trim()}
               aria-label="Send"
             >

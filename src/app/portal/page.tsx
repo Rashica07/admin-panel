@@ -165,11 +165,11 @@ export default function PortalPage() {
       {/* Header */}
       <header className="flex shrink-0 items-center justify-between border-b border-neutral-800 px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand/20 text-brand">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand/20 text-brand-fg">
             <Sparkles className="h-4 w-4" />
           </div>
           <div>
-            <p className="text-sm font-semibold leading-tight">Novus Assistant</p>
+            <p className="text-sm font-semibold leading-tight">OMNI Assistant</p>
             <p className="text-[10px] text-neutral-500 leading-tight">
               {session?.user?.name ?? 'Your website'}
             </p>
@@ -191,7 +191,7 @@ export default function PortalPage() {
           if (item.kind === 'user') {
             return (
               <div key={i} className="flex justify-end">
-                <div className="max-w-[85%] rounded-2xl rounded-br-md bg-brand px-4 py-2.5 text-sm text-black">
+                <div className="max-w-[85%] rounded-2xl rounded-br-md bg-brand px-4 py-2.5 text-sm text-brand-foreground">
                   {item.text}
                 </div>
               </div>
@@ -212,10 +212,10 @@ export default function PortalPage() {
               key={i}
               className={cn(
                 'rounded-2xl border p-4 space-y-3 transition-opacity',
-                item.state === 'pending' ? 'border-brand/40 bg-brand/5' : 'border-neutral-800 bg-neutral-900/50 opacity-70',
+                item.state === 'pending' ? 'border-brand/40 bg-surface-2/50' : 'border-neutral-800 bg-neutral-900/50 opacity-70',
               )}
             >
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-brand">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-brand-fg">
                 Preview — not live yet
               </p>
               {item.changes.map((c, j) => (
@@ -242,7 +242,7 @@ export default function PortalPage() {
                     type="button"
                     onClick={() => confirm(i)}
                     disabled={busy}
-                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand py-2.5 text-sm font-semibold text-black hover:bg-brand/90 transition-colors disabled:opacity-50"
+                    className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-brand py-2.5 text-sm font-semibold text-brand-foreground hover:bg-brand/90 transition-colors disabled:opacity-50"
                   >
                     <Check className="h-4 w-4" /> Confirm & publish
                   </button>
@@ -286,7 +286,7 @@ export default function PortalPage() {
                 key={q}
                 type="button"
                 onClick={() => ask(q)}
-                className="rounded-full border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-300 hover:border-brand/40 hover:text-brand transition-colors"
+                className="rounded-full border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-300 hover:border-brand/40 hover:text-brand-fg transition-colors"
               >
                 {q}
               </button>
@@ -345,7 +345,7 @@ export default function PortalPage() {
         <button
           type="submit"
           disabled={!input.trim() || busy}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand text-black hover:bg-brand/90 transition-colors disabled:opacity-40"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand text-brand-foreground hover:bg-brand/90 transition-colors disabled:opacity-40"
           aria-label="Send"
         >
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}

@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 const TYPE_META: Record<string, { label: string; icon: React.ElementType; color: string }> = {
-  page: { label: 'Page', icon: FileText, color: 'text-brand bg-brand/15' },
+  page: { label: 'Page', icon: FileText, color: 'text-brand-fg bg-brand/15' },
   product: { label: 'Product', icon: Package, color: 'text-blue-400 bg-blue-500/15' },
   article: { label: 'Article', icon: Newspaper, color: 'text-purple-400 bg-purple-500/15' },
   event: { label: 'Event', icon: CalendarDays, color: 'text-amber-400 bg-amber-500/15' },
@@ -82,7 +82,7 @@ export default function PagesList() {
       {/* ─── HEADER ───────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Pages & Content</h1>
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white">Pages & Content</h1>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="gap-2 hidden sm:flex text-neutral-300 border-border-strong hover:bg-surface-2 hover:text-white">
@@ -92,7 +92,7 @@ export default function PagesList() {
             <Upload className="h-4 w-4" /> Import
           </Button>
           <Link href="/dashboard/pages/new">
-            <Button className="gap-2 shadow-md bg-brand text-black hover:bg-brand-hover">
+            <Button className="gap-2 shadow-md bg-brand text-brand-foreground hover:bg-brand-hover">
               <Plus className="h-4 w-4" /> Add Content
             </Button>
           </Link>
@@ -153,14 +153,14 @@ export default function PagesList() {
 
         {/* Bulk Actions Toolbar (shows when items selected) */}
         {selectedIds.size > 0 && (
-          <div className="bg-brand/10 border-b border-brand/20 px-4 py-2 flex items-center justify-between text-sm anim-fade-in">
+          <div className="bg-brand/10 border-b border-border-strong px-4 py-2 flex items-center justify-between text-sm anim-fade-in">
             <div className="flex items-center gap-3">
-              <span className="font-semibold text-brand">{selectedIds.size} selected</span>
-              <Button variant="ghost" size="sm" className="h-7 text-xs text-brand hover:bg-brand/20">Bulk edit</Button>
-              <Button variant="ghost" size="sm" className="h-7 text-xs text-brand hover:bg-brand/20">Change status</Button>
+              <span className="font-semibold text-brand-fg">{selectedIds.size} selected</span>
+              <Button variant="ghost" size="sm" className="h-7 text-xs text-brand-fg hover:bg-brand/20">Bulk edit</Button>
+              <Button variant="ghost" size="sm" className="h-7 text-xs text-brand-fg hover:bg-brand/20">Change status</Button>
               <Button variant="ghost" size="sm" className="h-7 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300">Delete files</Button>
             </div>
-            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-brand" onClick={() => setSelectedIds(new Set())}>
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-brand-fg" onClick={() => setSelectedIds(new Set())}>
               <Plus className="h-4 w-4 rotate-45" />
             </Button>
           </div>
@@ -174,7 +174,7 @@ export default function PagesList() {
                 <th className="px-4 py-3 w-12 text-center font-medium">
                   <button onClick={toggleSelectAll} className="text-neutral-500 hover:text-white transition-colors">
                     {selectedIds.size === filteredPages.length && filteredPages.length > 0 ? (
-                      <CheckSquare className="h-4 w-4 text-brand" />
+                      <CheckSquare className="h-4 w-4 text-brand-fg" />
                     ) : (
                       <Square className="h-4 w-4" />
                     )}
@@ -208,13 +208,13 @@ export default function PagesList() {
                       key={page.id} 
                       className={cn(
                         "group transition-colors",
-                        isSelected ? "bg-brand/5 hover:bg-brand/10" : "hover:bg-surface-2/30"
+                        isSelected ? "bg-surface-2/50 hover:bg-brand/10" : "hover:bg-surface-2/30"
                       )}
                     >
                       <td className="px-4 py-3 text-center">
                         <button onClick={() => toggleSelect(page.id)} className="text-neutral-500 hover:text-white transition-colors">
                           {isSelected ? (
-                            <CheckSquare className="h-4 w-4 text-brand" />
+                            <CheckSquare className="h-4 w-4 text-brand-fg" />
                           ) : (
                             <Square className="h-4 w-4" />
                           )}
@@ -287,7 +287,7 @@ export default function PagesList() {
                     </p>
                     {!searchQuery && (
                       <Link href="/dashboard/pages/new">
-                        <Button className="bg-brand text-black hover:bg-brand-hover">Add Content</Button>
+                        <Button className="bg-brand text-brand-foreground hover:bg-brand-hover">Add Content</Button>
                       </Link>
                     )}
                   </td>

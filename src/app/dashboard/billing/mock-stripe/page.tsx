@@ -75,7 +75,7 @@ export default function MockStripePage() {
           <div className="mx-auto w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6">
             <CheckCircle2 className="h-10 w-10" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Payment Received!</h1>
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white">Payment Received!</h1>
           <p className="text-neutral-400 max-w-md mx-auto">
             Your payment is currently pending admin approval. You will receive an email once your workspace is fully activated.
           </p>
@@ -92,10 +92,10 @@ export default function MockStripePage() {
       {/* Stripe-like Header */}
       <div className="w-full max-w-3xl flex justify-between items-center mb-8">
         <div className="flex items-center gap-2 text-white">
-          <div className="h-8 w-8 bg-brand rounded-lg flex items-center justify-center shadow-lg shadow-brand/20">
+          <div className="h-8 w-8 bg-brand rounded-lg flex items-center justify-center">
             <ShieldCheck className="h-5 w-5 text-white" />
           </div>
-          <span className="font-bold text-xl tracking-tight">Novus Pulse</span>
+          <span className="font-bold text-xl tracking-tight">OMNI</span>
         </div>
         <div className="text-right">
           <p className="text-sm text-neutral-400">Total Due</p>
@@ -130,7 +130,7 @@ export default function MockStripePage() {
             <p className="text-xs text-neutral-400 leading-relaxed">
               This is a secure 256-bit SSL encrypted payment. 
               <br/><br/>
-              <em>Note: This is a mockup payment page for the Novus Pulse platform. Your card will not be charged. Admin approval is required to activate the account.</em>
+              <em>Note: This is a mock payment page for OMNI. Your card will not be charged. Admin approval is required to activate the account.</em>
             </p>
           </div>
         </div>

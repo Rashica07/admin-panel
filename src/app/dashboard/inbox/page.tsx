@@ -22,8 +22,7 @@ export default function InboxPage() {
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       <div className="mb-4">
-        <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-          <MessageCircle className="h-7 w-7 text-green-500" /> Unified Inbox
+        <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white flex items-center gap-2"> Unified Inbox
         </h1>
         <p className="text-sm text-neutral-400 mt-1">
           Chat with your site visitors in real-time. (WhatsApp integration pending).
@@ -50,7 +49,7 @@ export default function InboxPage() {
                 onClick={() => setActiveChat(chat.id)}
                 className={cn(
                   "w-full p-4 flex items-start gap-3 border-b border-border-strong/50 text-left transition-colors hover:bg-surface-2",
-                  activeChat === chat.id ? "bg-brand/5 border-l-2 border-l-brand" : "border-l-2 border-l-transparent"
+                  activeChat === chat.id ? "bg-surface-2/50 border-l-2 border-l-brand" : "border-l-2 border-l-transparent"
                 )}
               >
                 <div className="w-10 h-10 rounded-full bg-surface-2 flex items-center justify-center shrink-0 overflow-hidden">
@@ -63,7 +62,7 @@ export default function InboxPage() {
                     </span>
                     <span className="text-[10px] text-neutral-500 shrink-0">{chat.time}</span>
                   </div>
-                  <p className={cn("text-xs truncate", chat.unread ? "text-brand font-medium" : "text-neutral-500")}>
+                  <p className={cn("text-xs truncate", chat.unread ? "text-brand-fg font-medium" : "text-neutral-500")}>
                     {chat.lastMessage}
                   </p>
                 </div>
@@ -81,7 +80,7 @@ export default function InboxPage() {
           <div className="h-16 border-b border-border-strong px-6 flex items-center justify-between bg-surface/50 backdrop-blur-sm sticky top-0 z-10">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full bg-brand/10 flex items-center justify-center">
-                <User className="h-4 w-4 text-brand" />
+                <User className="h-4 w-4 text-brand-fg" />
               </div>
               <div>
                 <h3 className="font-semibold text-white text-sm">

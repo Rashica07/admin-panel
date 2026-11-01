@@ -208,7 +208,7 @@ function FieldEditor({
             onClick={() =>
               onChange(path, [...value, value.length > 0 ? emptyClone(value[value.length - 1]) : ''])
             }
-            className="flex items-center gap-1 text-[11px] text-brand hover:text-brand/80 transition-colors"
+            className="flex items-center gap-1 text-[11px] text-brand-fg hover:text-brand-fg/80 transition-colors"
           >
             <Plus className="h-3 w-3" /> Add
           </button>
@@ -390,7 +390,7 @@ export default function VisualBuilderPage() {
           err instanceof Error && 'statusCode' in err && (err as { statusCode: number }).statusCode === 401;
         if (!isAuthError) {
           toast.error('Could not load page content', {
-            description: err instanceof Error ? err.message : 'Is the Novus Pulse backend running on port 3000?',
+            description: err instanceof Error ? err.message : 'Is the OMNI API reachable?',
           });
         }
       } finally {
@@ -482,7 +482,7 @@ export default function VisualBuilderPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-brand" /> Visual Editor
+                <Sparkles className="h-4 w-4 text-brand-fg" /> Visual Editor
               </h1>
               <p className="text-[11px] text-neutral-400 mt-0.5">
                 Every section of your site — synced live.
@@ -509,7 +509,7 @@ export default function VisualBuilderPage() {
                     className="flex items-center gap-2 flex-1 px-4 py-3 text-left"
                   >
                     <ChevronRight
-                      className={`h-4 w-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-90 text-brand' : ''}`}
+                      className={`h-4 w-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-90 text-brand-fg' : ''}`}
                     />
                     <span className={`text-sm font-medium ${isOpen ? 'text-white' : 'text-neutral-300'}`}>
                       {name}

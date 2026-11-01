@@ -48,10 +48,10 @@ export function PlanGate({
     return (
       <div className="flex h-[65vh] flex-col items-center justify-center text-center gap-5 max-w-md mx-auto">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-neutral-900 border border-brand">
-          <Lock className="h-7 w-7 text-brand" />
+          <Lock className="h-7 w-7 text-brand-fg" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">Payment Required</h1>
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em]">Payment Required</h1>
           <p className="text-sm text-neutral-400">Please complete your startup's payment to unlock the platform.</p>
         </div>
         <Button asChild className="gap-2 mt-2">
@@ -70,7 +70,7 @@ export function PlanGate({
           <Eye className="h-7 w-7 text-amber-500" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">Pending Admin Approval</h1>
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em]">Pending Admin Approval</h1>
           <p className="text-sm text-neutral-400">Your workspace is being reviewed. We will email you once it's active.</p>
         </div>
       </div>
@@ -91,20 +91,20 @@ export function PlanGate({
       <div className="relative">
         <div className="absolute inset-0 rounded-full bg-brand/20 blur-xl" />
         <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-neutral-900 border border-border">
-          <Lock className="h-7 w-7 text-brand" />
+          <Lock className="h-7 w-7 text-brand-fg" />
         </div>
       </div>
 
       {/* Feature title + description */}
       <div className="space-y-2">
-        <h1 className="text-2xl font-bold tracking-tight">{copy.title}</h1>
+        <h1 className="text-[19px] font-semibold tracking-[-0.01em]">{copy.title}</h1>
         <p className="text-sm text-neutral-400 leading-relaxed">{copy.desc}</p>
       </div>
 
       {/* Plan badge */}
-      <div className="flex items-center gap-2 rounded-full bg-brand/10 border border-brand/20 px-4 py-2">
+      <div className="flex items-center gap-2 rounded-full bg-brand/10 border border-border-strong px-4 py-2">
         <span className="text-xs text-neutral-400">Included in</span>
-        <span className="text-sm font-semibold text-brand">
+        <span className="text-sm font-semibold text-brand-fg">
           {PLAN_LABEL[required]}
         </span>
         <span className="text-xs text-neutral-500">

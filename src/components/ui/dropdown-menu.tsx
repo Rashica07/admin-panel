@@ -39,7 +39,7 @@ const DropdownMenuItem = React.forwardRef<
       'cursor-pointer rounded-md px-2 py-1.5 text-sm outline-none transition-colors',
       variant === 'destructive'
         ? 'text-red-400 hover:bg-red-500/10 hover:text-red-300'
-        : 'text-neutral-200 hover:bg-brand/10 hover:text-brand',
+        : 'text-neutral-200 hover:bg-brand/10 hover:text-brand-fg',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}

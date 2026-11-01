@@ -62,8 +62,7 @@ export default function MenusPage() {
     <PlanGate feature="menus">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <LayoutList className="h-7 w-7 text-brand" /> Navigation & Menus
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2"> Navigation & Menus
           </h1>
           <p className="text-sm text-neutral-400 mt-1">
             Build and manage your site's navigation structures.
@@ -85,7 +84,7 @@ export default function MenusPage() {
               </div>
 
               {isCreating && (
-                <Card className="border-brand border-dashed bg-brand/5">
+                <Card className="border-brand border-dashed bg-surface-2/50">
                   <CardContent className="p-3 space-y-3">
                     <Input id="new-menu-name" placeholder="Menu Name (e.g. Footer)" className="h-8 text-sm" />
                     <Input id="new-menu-slug" placeholder="slug (e.g. footer-nav)" className="h-8 text-sm" />

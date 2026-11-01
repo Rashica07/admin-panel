@@ -13,7 +13,7 @@ export default function ForgotPasswordPage() {
           This feature is coming soon. Please contact support to reset your password.
         </p>
         <div className="pt-4 text-center text-sm">
-          <Link href="/login" className="text-brand hover:underline">
+          <Link href="/login" className="text-brand-fg hover:underline">
             Back to login
           </Link>
         </div>

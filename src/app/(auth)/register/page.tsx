@@ -24,8 +24,7 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export default function RegisterPage() {
-  if (process.env.NEXT_PUBLIC_DEMO_MODE !== 'false') return <DemoEnter />; // eslint-disable-line react-hooks/rules-of-hooks
+function RegisterForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -112,11 +111,17 @@ export default function RegisterPage() {
       <CardFooter className="flex justify-center border-t border-border pt-4">
         <p className="text-sm text-neutral-400">
           Already have an account?{' '}
-          <Link href="/login" className="text-brand hover:underline">
+          <Link href="/login" className="text-brand-fg hover:underline">
             Log In
           </Link>
         </p>
       </CardFooter>
     </Card>
   );
+}
+
+/** Demo mode has no backend to register against — go straight into the demo workspace. */
+export default function RegisterPage() {
+  if (process.env.NEXT_PUBLIC_DEMO_MODE !== 'false') return <DemoEnter />;
+  return <RegisterForm />;
 }

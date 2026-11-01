@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 export default function GeneralSettingsPage() {
   const [values, setValues] = useState({
-    storeName: 'Novus Store',
+    storeName: 'My Store',
     description: '',
     email: 'hello@example.com',
     timezone: 'UTC',
@@ -210,7 +210,7 @@ export default function GeneralSettingsPage() {
               <Button variant="ghost" size="sm" className="hover:bg-neutral-800 text-neutral-300" onClick={handleDiscard}>
                 Discard
               </Button>
-              <Button size="sm" className="gap-2 bg-brand text-black hover:bg-brand-hover" onClick={handleSave} disabled={saving}>
+              <Button size="sm" className="gap-2 bg-brand text-brand-foreground hover:bg-brand-hover" onClick={handleSave} disabled={saving}>
                 <Save className="h-4 w-4" /> Save
               </Button>
             </div>

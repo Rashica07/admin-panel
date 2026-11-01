@@ -86,7 +86,7 @@ function LoginForm() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <Link href="/forgot-password" className="text-xs text-brand hover:underline">
+              <Link href="/forgot-password" className="text-xs text-brand-fg hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -101,7 +101,7 @@ function LoginForm() {
       <CardFooter className="flex justify-center border-t border-border pt-4">
         <p className="text-sm text-neutral-400">
           Don't have a tenant yet?{' '}
-          <Link href="/register" className="text-brand hover:underline">
+          <Link href="/register" className="text-brand-fg hover:underline">
             Register your business
           </Link>
         </p>

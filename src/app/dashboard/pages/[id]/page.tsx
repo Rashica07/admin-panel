@@ -115,7 +115,7 @@ export default function EditPage() {
           </Button>
         </Link>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">{page.title}</h1>
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white">{page.title}</h1>
         </div>
         
         <div className="ml-auto flex items-center gap-2">
@@ -132,7 +132,7 @@ export default function EditPage() {
               Visual Editor
             </Button>
           </Link>
-          <Button type="submit" form="page-form" isLoading={isUpdating} className="gap-2 bg-brand text-black hover:bg-brand-hover">
+          <Button type="submit" form="page-form" isLoading={isUpdating} className="gap-2 bg-brand text-brand-foreground hover:bg-brand-hover">
             <Save className="h-4 w-4" /> Save
           </Button>
         </div>

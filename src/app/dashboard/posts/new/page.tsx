@@ -64,7 +64,7 @@ export default function NewPost() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">Create New Post</h1>
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white">Create New Post</h1>
             <p className="text-sm text-neutral-400">Set up the metadata before designing the content.</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
@@ -73,7 +73,7 @@ export default function NewPost() {
                 Cancel
               </Button>
             </Link>
-            <Button type="submit" isLoading={isPending} className="bg-brand text-black hover:bg-brand-hover gap-2">
+            <Button type="submit" isLoading={isPending} className="bg-brand text-brand-foreground hover:bg-brand-hover gap-2">
               <Save className="h-4 w-4" /> Save Post
             </Button>
           </div>

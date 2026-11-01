@@ -59,7 +59,7 @@ export default function NewPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Create New Content</h1>
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em]">Create New Content</h1>
             <p className="text-sm text-neutral-400">Add a new page, product, article or event.</p>
           </div>
           <div className="ml-auto flex items-center gap-2">

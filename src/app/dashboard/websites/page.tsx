@@ -141,8 +141,8 @@ export default function TenantWebsitesPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-          <Building2 className="h-7 w-7 text-brand" /> Tenant Websites
+        <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2">
+          <Building2 className="h-7 w-7 text-brand-fg" /> Tenant Websites
         </h1>
         <p className="text-sm text-neutral-400 mt-1">
           Every website connected to this workspace — open it live or jump straight into editing.
@@ -161,12 +161,12 @@ export default function TenantWebsitesPage() {
             <Card key={t.id} className="group hover:border-brand/40 transition-colors">
               <CardContent className="p-5 space-y-4">
                 <div className="flex items-start justify-between">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/15 text-brand">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand/15 text-brand-fg">
                     <Globe className="h-5 w-5" />
                   </div>
                   <div className="flex items-center gap-1.5 flex-wrap justify-end">
                     {isRecentInstall(t.createdAt) && (
-                      <span className="flex items-center gap-1 rounded-full bg-brand/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand">
+                      <span className="flex items-center gap-1 rounded-full bg-brand/15 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-brand-fg">
                         <Sparkles className="h-2.5 w-2.5" /> New
                       </span>
                     )}
@@ -206,7 +206,7 @@ export default function TenantWebsitesPage() {
                   {isSuperAdmin ? (
                     <Button 
                       size="sm" 
-                      className="flex-1 bg-brand text-black hover:bg-brand/90 font-medium shadow-brand/10 shadow-sm"
+                      className="flex-1 bg-brand text-brand-foreground hover:bg-brand/90 font-medium shadow-sm"
                       onClick={() => handleImpersonate(t.id)}
                     >
                       Open CMS
@@ -214,7 +214,7 @@ export default function TenantWebsitesPage() {
                   ) : (
                     <Button 
                       size="sm" 
-                      className="flex-1 bg-brand text-black hover:bg-brand/90 font-medium shadow-brand/10 shadow-sm"
+                      className="flex-1 bg-brand text-brand-foreground hover:bg-brand/90 font-medium shadow-sm"
                       onClick={() => {
                         setActiveTenant({ id: t.id, slug: t.slug, name: t.name });
                         toast.success(`Switched workspace context to ${t.name}`);
@@ -246,16 +246,16 @@ export default function TenantWebsitesPage() {
             <button
               type="button"
               onClick={() => setIsModalOpen(true)}
-              className="flex h-full min-h-44 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-neutral-500 hover:border-brand/40 hover:text-brand transition-colors"
+              className="flex h-full min-h-44 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-neutral-500 hover:border-brand/40 hover:text-brand-fg transition-colors"
             >
               <Globe className="h-6 w-6" />
               <span className="text-sm font-medium">Connect another website</span>
-              <span className="text-[10px] text-brand uppercase tracking-wider font-semibold">Admin Tool</span>
+              <span className="text-[10px] text-brand-fg uppercase tracking-wider font-semibold">Admin Tool</span>
             </button>
           ) : (
             <button
               type="button"
-              className="flex h-full min-h-44 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-neutral-500 hover:border-brand/40 hover:text-brand transition-colors cursor-not-allowed"
+              className="flex h-full min-h-44 flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-border text-neutral-500 hover:border-brand/40 hover:text-brand-fg transition-colors cursor-not-allowed"
               title={can('multisite') ? "Multi-site support is on the roadmap" : `Requires ${PLAN_LABEL[requiredPlan('multisite')]} plan`}
             >
               {can('multisite') ? (
@@ -339,7 +339,7 @@ export default function TenantWebsitesPage() {
                       onClick={() => setPlanSelection(tier)}
                       className={`py-2 px-3 rounded-lg text-xs font-semibold border capitalize transition-colors ${
                         planSelection === tier
-                          ? 'bg-brand/20 border-brand text-brand'
+                          ? 'bg-brand/20 border-brand text-brand-fg'
                           : 'bg-neutral-950 border-neutral-800 text-neutral-400 hover:border-neutral-700'
                       }`}
                     >
@@ -362,7 +362,7 @@ export default function TenantWebsitesPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-brand text-black hover:bg-brand/90 font-semibold"
+                  className="bg-brand text-brand-foreground hover:bg-brand/90 font-semibold"
                 >
                   {isSubmitting ? 'Creating...' : 'Connect Website'}
                 </Button>
@@ -405,7 +405,7 @@ export default function TenantWebsitesPage() {
                   Cancel
                 </Button>
                 <Button 
-                  className="flex-1 bg-brand text-black hover:bg-brand/90"
+                  className="flex-1 bg-brand text-brand-foreground hover:bg-brand/90"
                   onClick={handleTransferOwnership}
                   disabled={!transferEmail || isSubmitting}
                 >

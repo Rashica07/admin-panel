@@ -1,40 +1,47 @@
 @import "tailwindcss";
 
-/**
- * Novus Pulse design tokens.
+/* ───────────────────────────────────────────────────────────
+ * OMNI design tokens — shared verbatim by OMNI Admin and OMNI CMS.
  *
- * Three-layer surface system (Shopify-style depth):
- *   --background  → the page canvas (darkest)
- *   --surface     → cards, panels
- *   --surface-2   → nested elements, hovers, inputs inside cards
- * The eye reads elevation from these steps + hairline borders,
- * not from heavy shadows.
- */
+ * Identity: Charcoal #1A1A1D · Ivory #E8DCC8 · Crimson #C83246 · Gold #E8B44F
+ * Dark-only by design: one semantic token set, no fake light mode.
+ *
+ * Surfaces step up in lightness (canvas → sidebar → surface → surface-2);
+ * elevation is read from hairline borders, not shadows or glows.
+ * Crimson marks the primary action and the current location — nothing else.
+ * Gold marks attention (warnings, drafts, pending). Data is set in mono.
+ * ─────────────────────────────────────────────────────────── */
 :root {
-  --background: #09090b;
-  --foreground: #fafafa;
+  --background: #141416;   /* canvas */
+  --sidebar: #1a1a1d;      /* charcoal */
+  --surface: #1d1d20;      /* panels */
+  --surface-2: #252528;    /* inputs, hovers, nested rows */
+  --surface-3: #2e2e32;    /* hover on surface-2 */
 
-  --surface: #101013;
-  --surface-2: #17171b;
-  --sidebar: #0c0c0f;
+  --foreground: #ede4d3;   /* ivory, lifted for body text */
+  --ivory: #e8dcc8;
 
-  /* Brand colors */
-  --brand-orange: #ff8c00;
-  --brand-orange-hover: #ffa227;
-  --brand-glow: rgba(255, 140, 0, 0.35);
+  --border: #2c2b2d;
+  --border-strong: #3c3a39;
+  --input: #19191b;
+  --ring: #e86373;
 
-  /* UI colors */
-  --border: #1f1f26;
-  --border-strong: #2c2c34;
-  --input: #131317;
-  --ring: #ff8c00;
-  --radius: 0.625rem;
+  /* Brand: crimson fill for actions; a lighter crimson for crimson *text*
+     so small labels clear WCAG AA (5.6:1 on the canvas). */
+  --brand: #c83246;
+  --brand-hover: #d63f53;
+  --brand-fg: #e86373;
+  --brand-foreground: #fff7ee;
+  --brand-glow: rgba(200, 50, 70, 0.28);
 
-  /* Motion */
+  --gold: #e8b44f;
+
+  --radius: 6px;
+
   --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
-  --dur-fast: 150ms;
-  --dur-med: 250ms;
-  --dur-slow: 400ms;
+  --dur-fast: 120ms;
+  --dur-med: 180ms;
+  --dur-slow: 220ms;
 }
 
 @theme inline {
@@ -42,163 +49,181 @@
   --color-foreground: var(--foreground);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-sidebar: var(--sidebar);
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-ivory: var(--ivory);
+  --color-gold: var(--gold);
 
-  --color-brand: var(--brand-orange);
-  --color-brand-hover: var(--brand-orange-hover);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-foreground: var(--brand-foreground);
 
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-data), ui-monospace, SFMono-Regular, monospace;
+  --font-heading: var(--font-ui), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Force dark theme globally */
+/* Palette remap: every existing neutral/semantic utility in the codebase
+   resolves to the OMNI scale (warm greys tinted toward ivory), so the whole
+   product shifts at once instead of page by page. */
+@theme {
+  --color-neutral-50: #f7f1e6;
+  --color-neutral-100: #efe7d8;
+  --color-neutral-200: #e8dcc8;
+  --color-neutral-300: #d3c8b4;
+  --color-neutral-400: #aea492;
+  --color-neutral-500: #8c8476;
+  --color-neutral-600: #6a6359;
+  --color-neutral-700: #47433e;
+  --color-neutral-800: #302e2c;
+  --color-neutral-900: #222122;
+  --color-neutral-950: #18171a;
+
+  --color-zinc-400: #aea492;
+  --color-zinc-500: #8c8476;
+  --color-zinc-800: #302e2c;
+  --color-zinc-900: #222122;
+
+  /* success */
+  --color-green-300: #9fd8b5;
+  --color-green-400: #6cc495;
+  --color-green-500: #3fa36d;
+  --color-green-600: #2f8457;
+  --color-emerald-400: #6cc495;
+  --color-emerald-500: #3fa36d;
+  /* error — kept distinct from brand crimson by hue and by always pairing with text/icon */
+  --color-red-300: #f4a7ac;
+  --color-red-400: #ef737c;
+  --color-red-500: #dc4651;
+  --color-red-600: #b9343f;
+  /* attention — gold */
+  --color-amber-300: #f2cb7c;
+  --color-amber-400: #e8b44f;
+  --color-amber-500: #d39a30;
+  --color-amber-600: #b07d1f;
+  --color-yellow-400: #e8b44f;
+  --color-yellow-500: #d39a30;
+  --color-orange-400: #e8a35a;
+  --color-orange-500: #d98a3d;
+  /* information */
+  --color-blue-300: #abc7ee;
+  --color-blue-400: #82abe3;
+  --color-blue-500: #528ad3;
+  --color-blue-600: #3e70b5;
+
+  /* tighter, consistent radii (rounded-full stays for pills/avatars) */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 10px;
+  --radius-3xl: 12px;
+  --radius-4xl: 14px;
+}
+
+/* Operational density: one root step down (15px) scales type and spacing
+   together, matching the compact references without touching every page. */
+html {
+  font-size: 93.75%;
+  /* native controls (select, checkbox, date, scrollbars) render dark */
+  color-scheme: dark;
+  accent-color: var(--brand);
+}
+
+select,
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"] {
+  background-color: var(--input);
+  color: var(--foreground);
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: var(--brand-glow);
-  color: #fff;
+  background: rgba(200, 50, 70, 0.35);
+  color: #fff7ee;
 }
 
-/* ── Motion system ─────────────────────────────────────────── */
-
-@keyframes np-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
+/* Tabular numbers wherever data is shown in mono. */
+.font-mono,
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Motion: fast, opacity-only; nothing that delays routine work ── */
 @keyframes np-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-
+@keyframes np-fade-up {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 @keyframes np-scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.985); }
+  to { opacity: 1; transform: scale(1); }
 }
-
-/* The signature: a slow breathing glow for "live" elements. */
 @keyframes np-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 var(--brand-glow);
-    opacity: 1;
-  }
-  50% {
-    box-shadow: 0 0 12px 2px var(--brand-glow);
-    opacity: 0.85;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
 }
 
-/* Page content entrance — applied per route via key={pathname}. */
-.anim-page {
-  animation: np-fade-up var(--dur-slow) var(--ease-out) both;
-}
-
-.anim-fade-up {
-  animation: np-fade-up var(--dur-slow) var(--ease-out) both;
-}
-
-.anim-fade-in {
-  animation: np-fade-in var(--dur-med) var(--ease-out) both;
-}
-
-.anim-scale-in {
-  animation: np-scale-in var(--dur-med) var(--ease-out) both;
-}
-
-/* Stagger helpers — apply alongside an anim-* class. */
-.stagger-1 { animation-delay: 40ms; }
-.stagger-2 { animation-delay: 80ms; }
-.stagger-3 { animation-delay: 120ms; }
-.stagger-4 { animation-delay: 160ms; }
-.stagger-5 { animation-delay: 200ms; }
-.stagger-6 { animation-delay: 240ms; }
-
-/* The live-pulse signature (active nav bar, live status dots). */
-.np-pulse {
-  animation: np-pulse 2.4s ease-in-out infinite;
-}
+.anim-page { animation: np-fade-in var(--dur-med) var(--ease-out) both; }
+.anim-fade-up { animation: np-fade-up var(--dur-med) var(--ease-out) both; }
+.anim-fade-in { animation: np-fade-in var(--dur-med) var(--ease-out) both; }
+.anim-scale-in { animation: np-scale-in var(--dur-fast) var(--ease-out) both; }
+.stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5, .stagger-6 { animation-delay: 0ms; }
+.np-pulse { animation: np-pulse 2.4s ease-in-out infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .anim-page,
-  .anim-fade-up,
-  .anim-fade-in,
-  .anim-scale-in,
-  .np-pulse {
-    animation: none;
-  }
-  * {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
 
-/* ── Depth helpers ─────────────────────────────────────────── */
-
-/* Card surface: hairline border + inset top highlight = crisp edge. */
+/* ── Surfaces ── */
 .np-surface {
   background: var(--surface);
   border: 1px solid var(--border);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.03),
-    0 1px 2px rgba(0, 0, 0, 0.4);
 }
-
 .np-surface-hover {
-  transition:
-    border-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-med) var(--ease-out),
-    transform var(--dur-med) var(--ease-out);
+  transition: border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
 }
 .np-surface-hover:hover {
   border-color: var(--border-strong);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 8px 24px -8px rgba(0, 0, 0, 0.6);
-  transform: translateY(-1px);
 }
 
-/* Custom scrollbar for webkit */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* OMNI section label: small mono caps used for nav groups and panel meta. */
+.omni-label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-neutral-500);
 }
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #2a2a32;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #3a3a44;
-}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #34322f; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #45423e; }
