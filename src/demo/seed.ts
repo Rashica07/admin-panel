@@ -5,7 +5,7 @@
  * no backend behind it.
  */
 
-export const DEMO_VERSION = 3;
+export const DEMO_VERSION = 4;
 
 /**
  * Home page shape differs by app: the generic block editor (agentic-cms) stores
@@ -38,7 +38,9 @@ export function svgImage(label: string, a: string, b: string, w = 800, h = 600):
     `<circle cx='${w * 0.2}' cy='${h * 0.85}' r='${h * 0.28}' fill='rgba(0,0,0,0.12)'/>` +
     `<text x='50%' y='52%' fill='rgba(255,255,255,0.92)' font-family='Georgia,serif' font-size='${Math.round(w / 13)}' text-anchor='middle' dominant-baseline='middle'>${label}</text>` +
     `</svg>`;
-  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  // encodeURIComponent leaves ( ) ' alone, which would break unquoted CSS url(...) usages.
+  const encoded = encodeURIComponent(svg).replace(/[()']/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  return 'data:image/svg+xml;charset=utf-8,' + encoded;
 }
 
 const iso = (offsetMs: number) => new Date(Date.now() + offsetMs).toISOString();
@@ -57,7 +59,7 @@ export function buildSeed(): DemoDb {
     status: 'active',
     paymentMethod: 'card',
     ownerId: DEMO_USER_ID,
-    siteUrl: 'https://meridian-roasters.example.com',
+    siteUrl: '/demo-site', // built-in stand-in storefront (see app/demo-site)
     devUrl: null,
     whatsappNumber: '+14155550123',
     revalidateSecret: 'demo_revalidate_secret',

@@ -15,7 +15,9 @@ import { usePlan } from '@/hooks/usePlan';
 import { PLAN_LABEL } from '@/lib/plan';
 import { useUIStore } from '@/store/useStore';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:21113';
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.NEXT_PUBLIC_DEMO_MODE !== 'false' ? '/demo-site' : 'http://localhost:21113');
 const NEW_INSTALL_WINDOW_MS = 24 * 60 * 60 * 1000;
 
 interface TenantSite {
@@ -196,7 +198,7 @@ export default function TenantWebsitesPage() {
                 )}
 
                 <div className="flex gap-2 pt-1">
-                  <a href={t.devUrl || t.siteUrl || `http://localhost:21113/public/${t.slug}`} target="_blank" rel="noopener noreferrer" className="flex-1">
+                  <a href={t.devUrl || t.siteUrl || `${SITE_URL}/public/${t.slug}`} target="_blank" rel="noopener noreferrer" className="flex-1">
                     <Button variant="outline" size="sm" className="w-full gap-1.5 border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800">
                       <ExternalLink className="h-3.5 w-3.5" /> Site
                     </Button>

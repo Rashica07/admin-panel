@@ -793,6 +793,73 @@ route('POST', '/content-ai/support-chat', (_m, r) => {
   return { reply };
 });
 
+// Demo agent: tiny intent matcher that turns plain-English asks into the same
+// approve/reject action cards the real agent produces — and really applies them.
+type Planned = { summary: string; actions: { toolName: string; summary: string; input: Record<string, any> }[] };
+
+const latestUserText = (m: string) => {
+  const i = m.lastIndexOf('Owner:');
+  return (i >= 0 ? m.slice(i + 6) : m).trim();
+};
+const titleCase = (t: string) => t.replace(/\b\w/g, (c) => c.toUpperCase());
+
+function planAgent(text: string): Planned {
+  const d = getDb();
+  const t = text.toLowerCase();
+
+  if (/\b(list|show|what).*\bpages?\b/.test(t)) {
+    const pages = (d.pages as any[]).filter((p) => p.type === 'page');
+    return { summary: `You have ${pages.length} pages: ${pages.map((p) => `${p.title} (${p.published ? 'published' : 'draft'})`).join(', ')}.`, actions: [] };
+  }
+  if (/\b(list|show|what).*\bproducts?\b/.test(t)) {
+    const ps = d.products as any[];
+    return { summary: `Your catalog has ${ps.length} products: ${ps.map((p) => `${p.title} (€${p.price})`).join(', ')}.`, actions: [] };
+  }
+  if (/\bpublish\b/.test(t)) {
+    const target = (d.pages as any[]).find((p) => t.includes(p.slug) || t.includes(String(p.title).toLowerCase())) ?? (t.includes('home') ? (d.pages as any[]).find((p) => p.slug === 'home') : null);
+    if (target) return { summary: `I can publish “${target.title}”.`, actions: [{ toolName: 'publish_page', summary: `Publish page “${target.title}”`, input: { pageId: target.id } }] };
+  }
+  const create = t.match(/\b(?:create|make|add|write|draft|new)\s+(?:a\s+|an\s+|the\s+)?(?:new\s+)?(page|article|post|blog post|journal post)\b\s*(?:called|named|titled|about|for|:)?\s*(.*)$/i);
+  if (create) {
+    const kind = create[1].toLowerCase();
+    const rawTitle = (create[2] || '').replace(/["“”.!?]+/g, '').trim();
+    const title = titleCase(rawTitle || `Untitled ${kind}`);
+    const isArticle = kind !== 'page';
+    return {
+      summary: `I can draft ${isArticle ? 'an article' : 'a page'} titled “${title}”. Approve to create it.`,
+      actions: [{ toolName: isArticle ? 'create_content_entry' : 'create_page', summary: `Create ${isArticle ? 'article' : 'page'} “${title}” (draft)`, input: { title, slug: slugify(title) } }],
+    };
+  }
+  return {
+    summary: 'In this demo I can list your pages or products, publish a page (“publish my homepage”), or draft content (“create a page called Our Roasters”). The live product connects this to a real model.',
+    actions: [],
+  };
+}
+
+function applyAgentAction(a: any) {
+  const d = getDb();
+  if (a.toolName === 'create_page') {
+    const page = { id: uid('page'), tenantId: DEMO_TENANT_ID, title: a.input.title, slug: a.input.slug, type: 'page', content: { blocks: [] }, published: false, createdAt: now(), updatedAt: now() };
+    d.pages.unshift(page);
+    audit('create', 'page', page.id, { title: page.title, via: 'agent' });
+    return { id: page.id };
+  }
+  if (a.toolName === 'publish_page') {
+    const p = (d.pages as any[]).find((x) => x.id === a.input.pageId);
+    if (p) { p.published = true; p.updatedAt = now(); audit('publish', 'page', p.id, { via: 'agent' }); }
+    return { id: a.input.pageId };
+  }
+  if (a.toolName === 'create_content_entry') {
+    const type = (d.contentTypes as any[]).find((x) => x.apiId === 'article');
+    if (!type) return { skipped: true };
+    const e = { id: uid('e'), tenantId: DEMO_TENANT_ID, contentTypeId: type.id, typeApiId: 'article', slug: a.input.slug, locale: 'en', status: 'draft', data: { title: a.input.title, slug: a.input.slug, excerpt: '', body: '<p>Drafted by the agent.</p>' }, seo: {}, scheduledAt: null, publishedAt: null, createdBy: DEMO_USER_ID, createdAt: now(), updatedAt: now(), deletedAt: null };
+    d.contentEntries.unshift(e);
+    audit('create', 'content_entry', e.id, { type: 'article', via: 'agent' });
+    return { id: e.id };
+  }
+  return { ok: true };
+}
+
 function runResult(run: any) {
   return { run, actions: (getDb().agentActions as any[]).filter((a) => a.runId === run.id) };
 }
@@ -800,10 +867,15 @@ route('POST', '/agent/run', (_m, r) => {
   const d = getDb();
   const message = String(r.body?.message ?? '');
   const mode = r.body?.mode ?? 'copilot';
-  const run = { id: uid('run'), tenantId: DEMO_TENANT_ID, userId: DEMO_USER_ID, userEmail: d.users[0].email, mode, message, status: 'completed', summary: `Here’s what I’d do for: “${message.slice(0, 80)}”. (Demo agent — proposals only.)`, error: null, inputTokens: 900, outputTokens: 240, createdAt: now(), updatedAt: now() };
-  const action = { id: uid('act'), runId: run.id, tenantId: DEMO_TENANT_ID, toolName: 'create_content_entry', summary: `Draft a new article from your request`, input: { type: 'article', title: message.slice(0, 60) || 'Untitled' }, status: mode === 'autonomous' ? 'applied' : 'pending', result: null, error: null, decidedByUserId: mode === 'autonomous' ? DEMO_USER_ID : null, createdAt: now(), updatedAt: now() };
+  const plan = planAgent(latestUserText(message));
+  const run = { id: uid('run'), tenantId: DEMO_TENANT_ID, userId: DEMO_USER_ID, userEmail: d.users[0].email, mode, message: latestUserText(message), status: 'completed', summary: plan.summary, error: null, inputTokens: 900, outputTokens: 240, createdAt: now(), updatedAt: now() };
   d.agentRuns.unshift(run);
-  d.agentActions.unshift(action);
+  for (const pa of plan.actions) {
+    const auto = mode === 'autonomous';
+    const action: any = { id: uid('act'), runId: run.id, tenantId: DEMO_TENANT_ID, toolName: pa.toolName, summary: pa.summary, input: pa.input, status: auto ? 'applied' : 'pending', result: null, error: null, decidedByUserId: auto ? DEMO_USER_ID : null, createdAt: now(), updatedAt: now() };
+    if (auto) action.result = applyAgentAction(action);
+    d.agentActions.unshift(action);
+  }
   return runResult(run);
 });
 route('GET', '/agent/runs', () => getDb().agentRuns);
@@ -812,10 +884,11 @@ route('GET', '/agent/runs/([^/]+)', (m) => {
   if (!run) throw notFound('Run');
   return runResult(run);
 });
-const decide = (status: string) => (m: RegExpMatchArray) => {
+const decide = (status: 'applied' | 'rejected') => (m: RegExpMatchArray) => {
   const a = getDb().agentActions.find((x: any) => x.id === m[1]);
   if (!a) throw notFound('Action');
-  Object.assign(a, { status, decidedByUserId: DEMO_USER_ID, updatedAt: now(), result: status === 'applied' ? { ok: true } : null });
+  Object.assign(a, { status, decidedByUserId: DEMO_USER_ID, updatedAt: now() });
+  a.result = status === 'applied' ? applyAgentAction(a) : null;
   return a;
 };
 route('POST', '/agent/actions/([^/]+)/approve', decide('applied'));

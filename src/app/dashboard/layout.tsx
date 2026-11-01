@@ -56,7 +56,9 @@ import {
   isPlan,
 } from '@/lib/plan';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:21113';
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.NEXT_PUBLIC_DEMO_MODE !== 'false' ? '/demo-site' : 'http://localhost:21113');
 
 type NavItem = {
   name: string;
