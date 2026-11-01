@@ -532,17 +532,20 @@ route('GET', '/content/search', (_m, r) => {
   const q = (r.query.get('q') ?? '').toLowerCase().trim();
   const type = r.query.get('type');
   const limit = Number(r.query.get('limit') ?? 20);
-  if (!q) return [];
+  if (!q) return { items: [], total: 0 };
   const hits: any[] = [];
   for (const e of getDb().contentEntries as any[]) {
     if (e.deletedAt || (type && e.typeApiId !== type)) continue;
-    const text = JSON.stringify(e.data).toLowerCase() + ' ' + e.slug;
-    if (text.includes(q)) {
-      const title = e.data?.title ?? e.data?.name ?? e.data?.question ?? e.slug;
-      hits.push({ id: e.id, typeApiId: e.typeApiId, slug: e.slug, title, status: e.status, updatedAt: e.updatedAt, data: e.data });
-    }
+    const strings = Object.values(e.data ?? {}).filter((v) => typeof v === 'string') as string[];
+    const hay = [e.slug, ...strings].join(' \n ');
+    const idx = hay.toLowerCase().indexOf(q);
+    if (idx < 0) continue;
+    const plain = hay.replace(/<[^>]+>/g, ' ');
+    const at = Math.max(plain.toLowerCase().indexOf(q) - 30, 0);
+    const title = e.data?.title ?? e.data?.name ?? e.data?.question ?? e.slug;
+    hits.push({ id: e.id, slug: e.slug, status: e.status, locale: e.locale, typeApiId: e.typeApiId, updatedAt: e.updatedAt, title, snippet: `${title} — …${plain.slice(at, at + 90).trim()}…` });
   }
-  return hits.slice(0, limit);
+  return { items: hits.slice(0, limit), total: hits.length };
 });
 route('GET', '/content/stats', () => {
   const d = getDb();
@@ -588,7 +591,7 @@ route('DELETE', '/content/permissions/([^/]+)', (m) => {
 // Teams
 // ─────────────────────────────────────────────────────────────
 route('GET', '/teams/members', () => getDb().users);
-route('GET', '/teams/invites', () => getDb().invites);
+route('GET', '/teams/invites', () => (getDb().invites as any[]).map((i) => ({ ...i, token: i.token ?? 'demo-invite-token', inviter: { firstName: getDb().users[0].firstName, lastName: getDb().users[0].lastName } })));
 route('POST', '/teams/invites', (_m, r) => {
   const inv = { id: uid('inv'), email: r.body?.email ?? 'new@example.com', role: r.body?.role ?? 'editor', status: 'pending', createdAt: now(), expiresAt: new Date(Date.now() + 7 * 86_400_000).toISOString() };
   getDb().invites.unshift(inv);
@@ -619,8 +622,10 @@ const availability: Handler = (_m, r) => {
 route('GET', '/reservations/availability', availability);
 route('GET', '/reservations', (_m, r) => {
   const from = r.query.get('from'); const to = r.query.get('to'); const status = r.query.get('status');
+  const resources = getDb().resources as any[];
   return (getDb().reservations as any[])
     .filter((x) => !x.deletedAt && (!from || x.startsAt >= from) && (!to || x.startsAt <= to) && (!status || x.status === status))
+    .map((x) => ({ ...x, resource: resources.find((rs) => rs.id === x.resourceId) ?? null }))
     .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
 });
 const createReservation: Handler = (_m, r) => {
