@@ -59,14 +59,13 @@ export default function PostsPage() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-            <Newspaper className="h-6 w-6 text-brand" /> Posts
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white flex items-center gap-2"> Posts
           </h1>
           <p className="text-neutral-400 text-sm mt-1">Manage your blog articles and news updates.</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/dashboard/posts/new">
-            <Button className="gap-2 shadow-md bg-brand text-black hover:bg-brand-hover">
+            <Button className="gap-2 shadow-md bg-brand text-brand-foreground hover:bg-brand-hover">
               <Plus className="h-4 w-4" /> Add Post
             </Button>
           </Link>
@@ -80,7 +79,7 @@ export default function PostsPage() {
           onClick={() => setSelectedCategory('all')}
           className={cn(
             'rounded-lg px-3 py-1 text-xs font-medium transition-colors',
-            selectedCategory === 'all' ? 'bg-brand/10 text-brand border border-brand/20' : 'bg-surface-2 text-neutral-400 border border-transparent hover:bg-surface border-border-strong'
+            selectedCategory === 'all' ? 'bg-brand/10 text-brand-fg border border-border-strong' : 'bg-surface-2 text-neutral-400 border border-transparent hover:bg-surface border-border-strong'
           )}
         >
           All ({posts.length})
@@ -93,7 +92,7 @@ export default function PostsPage() {
               onClick={() => setSelectedCategory(cat.id)}
               className={cn(
                 'rounded-lg px-3 py-1 text-xs font-medium transition-colors',
-                selectedCategory === cat.id ? 'bg-brand/10 text-brand border border-brand/20' : 'bg-surface-2 text-neutral-400 border border-transparent hover:bg-surface border-border-strong'
+                selectedCategory === cat.id ? 'bg-brand/10 text-brand-fg border border-border-strong' : 'bg-surface-2 text-neutral-400 border border-transparent hover:bg-surface border-border-strong'
               )}
             >
               {cat.title} ({count})
@@ -137,7 +136,7 @@ export default function PostsPage() {
                   <tr key={post.id} className="hover:bg-surface-2/30 transition-colors group">
                     <td className="px-4 py-3">
                       <div>
-                        <Link href={`/dashboard/posts/${post.id}`} className="font-semibold text-white hover:text-brand transition-colors">
+                        <Link href={`/dashboard/posts/${post.id}`} className="font-semibold text-white hover:text-brand-fg transition-colors">
                           {post.title}
                         </Link>
                         <div className="text-xs text-neutral-500 mt-0.5 truncate max-w-[200px]">/{post.slug}</div>
@@ -168,7 +167,7 @@ export default function PostsPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <Link href={`/dashboard/builder?page=${post.id}`}>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-brand hover:bg-brand/10" title="Visual Editor">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 text-neutral-400 hover:text-brand-fg hover:bg-brand/10" title="Visual Editor">
                             <Paintbrush className="h-4 w-4" />
                           </Button>
                         </Link>
@@ -193,7 +192,7 @@ export default function PostsPage() {
                       Get started by creating your first post.
                     </p>
                     <Link href="/dashboard/posts/new">
-                      <Button className="bg-brand text-black hover:bg-brand-hover">Add Post</Button>
+                      <Button className="bg-brand text-brand-foreground hover:bg-brand-hover">Add Post</Button>
                     </Link>
                   </td>
                 </tr>

@@ -14,7 +14,7 @@ export default function StaffSettingsPage() {
             <CardTitle className="text-lg font-semibold">Staff Accounts</CardTitle>
             <CardDescription className="text-neutral-400 mt-1">Manage who has access to your store.</CardDescription>
           </div>
-          <Button className="bg-brand text-black hover:bg-brand-hover gap-2">
+          <Button className="bg-brand text-brand-foreground hover:bg-brand-hover gap-2">
             <Plus className="h-4 w-4" /> Invite staff
           </Button>
         </CardHeader>
@@ -39,7 +39,7 @@ export default function StaffSettingsPage() {
                     <p className="text-xs text-neutral-500 mt-0.5">{staff.email}</p>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-brand/10 text-brand">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-brand/10 text-brand-fg">
                       {staff.role}
                     </span>
                   </td>
@@ -57,7 +57,7 @@ export default function StaffSettingsPage() {
       <Card className="bg-surface border-border shadow-sm">
         <CardHeader className="pb-4 border-b border-border/50">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-brand" />
+            <ShieldCheck className="h-5 w-5 text-brand-fg" />
             Roles & Permissions
           </CardTitle>
           <CardDescription className="text-neutral-400 mt-1">Control what your staff can see and do.</CardDescription>
@@ -65,7 +65,7 @@ export default function StaffSettingsPage() {
         <CardContent className="pt-6 space-y-4">
           <div className="flex items-center justify-between p-4 rounded-xl border border-border-strong bg-surface-2 hover:border-neutral-600 transition-colors">
             <div className="flex items-center gap-4">
-              <div className="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center text-brand">
+              <div className="h-10 w-10 rounded-full bg-brand/10 flex items-center justify-center text-brand-fg">
                 <UserCog className="h-5 w-5" />
               </div>
               <div>

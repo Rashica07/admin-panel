@@ -43,16 +43,13 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       {/* ─── HEADER ────────────────────────────────────────────── */}
       <div className="mb-6 shrink-0 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">Settings</h1>
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white">Settings</h1>
           <div className="flex items-center text-sm text-neutral-400 mt-1 space-x-2">
             <Link href="/dashboard" className="hover:text-white transition-colors">Home</Link>
             <span>›</span>
             <span className="text-neutral-300">Settings</span>
           </div>
         </div>
-        <button className="text-neutral-400 hover:text-white flex items-center gap-2 text-sm font-medium transition-colors">
-          <HelpCircle className="h-4 w-4" /> Help
-        </button>
       </div>
 
       <div className="flex flex-col md:flex-row gap-8 flex-1 min-h-0">
@@ -77,14 +74,14 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                   className={cn(
                     'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all',
                     isActive
-                      ? 'bg-brand/10 text-brand border-l-2 border-brand rounded-l-none pl-2.5'
+                      ? 'bg-brand/10 text-brand-fg border-l-2 border-brand rounded-l-none pl-2.5'
                       : 'text-neutral-400 hover:bg-surface-2/80 hover:text-white border-l-2 border-transparent pl-2.5'
                   )}
                 >
                   <s.icon 
                     className={cn(
                       'h-4 w-4 shrink-0 transition-colors', 
-                      isActive ? 'text-brand' : 'text-neutral-500 group-hover:text-white'
+                      isActive ? 'text-brand-fg' : 'text-neutral-500 group-hover:text-white'
                     )} 
                   />
                   {s.name}

@@ -50,11 +50,11 @@ export default function ConnectedAppsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-            <Link2 className="h-7 w-7 text-brand" /> Connected Apps
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white flex items-center gap-2">
+            <Link2 className="h-7 w-7 text-brand-fg" /> Connected Apps
           </h1>
           <p className="text-sm text-neutral-400 mt-1">
-            Websites and apps currently connected to your Novus Pulse API.
+            Websites and apps currently connected to your OMNI workspace.
           </p>
         </div>
         <Button 
@@ -97,7 +97,7 @@ export default function ConnectedAppsPage() {
               <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="font-bold text-white text-lg">{app.name}</h3>
-                  <a href={app.url} target="_blank" rel="noopener noreferrer" className="text-brand text-sm hover:underline flex items-center gap-1 mt-0.5">
+                  <a href={app.url} target="_blank" rel="noopener noreferrer" className="text-brand-fg text-sm hover:underline flex items-center gap-1 mt-0.5">
                     {app.url} <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
@@ -127,11 +127,11 @@ export default function ConnectedAppsPage() {
         {/* Add New App Card */}
         <Card className="bg-surface/50 border-border-strong border-dashed overflow-hidden flex flex-col items-center justify-center p-8 text-center shadow-none min-h-[360px] group cursor-pointer hover:bg-surface transition-colors">
           <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <Link2 className="h-8 w-8 text-brand" />
+            <Link2 className="h-8 w-8 text-brand-fg" />
           </div>
           <h3 className="font-bold text-white text-lg">Connect New App</h3>
           <p className="text-sm text-neutral-400 mt-2 max-w-xs">
-            Install the <code className="text-brand bg-brand/10 px-1 py-0.5 rounded">@kiq/novus-pulse</code> framework via NPM in your Next.js or React app to see it appear here automatically.
+            Install the <code className="text-brand-fg bg-brand/10 px-1 py-0.5 rounded">@kiq/novus-pulse</code> framework via NPM in your Next.js or React app to see it appear here automatically.
           </p>
         </Card>
       </div>

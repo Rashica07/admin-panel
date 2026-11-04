@@ -11,7 +11,7 @@ export function usePhotos() {
     queryKey: ['photos', activeTenantId],
     queryFn: async () => {
       const pulse = createPulseClient(session?.accessToken);
-      return pulse.getPhotos();
+      return pulse.getMedia();
     },
     enabled: !!session?.accessToken,
   });
@@ -25,7 +25,7 @@ export function useUploadPhoto() {
   return useMutation({
     mutationFn: async (data: { url: string; filename: string; size: number }) => {
       const pulse = createPulseClient(session?.accessToken);
-      return pulse.createPhoto(data);
+      return pulse.createMedia(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photos', activeTenantId] });
@@ -41,7 +41,7 @@ export function useDeletePhoto() {
   return useMutation({
     mutationFn: async (id: string) => {
       const pulse = createPulseClient(session?.accessToken);
-      return pulse.deletePhoto(id);
+      return pulse.deleteMedia(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['photos', activeTenantId] });

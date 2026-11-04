@@ -52,8 +52,7 @@ export default function CategoriesPage() {
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-10 anim-fade-in">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-          <Folder className="h-6 w-6 text-brand" /> Categories
+        <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white flex items-center gap-2"> Categories
         </h1>
       </div>
 
@@ -83,7 +82,7 @@ export default function CategoriesPage() {
                     className="bg-surface-2 border-border-strong text-sm"
                   />
                 </div>
-                <Button type="submit" isLoading={isCreating} className="w-full bg-brand text-black hover:bg-brand-hover">
+                <Button type="submit" isLoading={isCreating} className="w-full bg-brand text-brand-foreground hover:bg-brand-hover">
                   <Plus className="h-4 w-4 mr-2" /> Add Category
                 </Button>
               </form>

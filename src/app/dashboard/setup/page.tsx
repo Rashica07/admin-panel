@@ -44,7 +44,7 @@ export default function SetupWizard() {
         <div className="h-24 w-24 rounded-full bg-green-500/20 flex items-center justify-center mb-8">
           <CheckCircle2 className="h-12 w-12 text-green-500" />
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-white mb-4">Your store is ready!</h1>
+        <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white mb-4">Your store is ready!</h1>
         <p className="text-neutral-400 max-w-md text-center mb-10">
           We've set up your workspace. You can always change these settings later in your dashboard.
         </p>
@@ -68,7 +68,7 @@ export default function SetupWizard() {
           </Link>
         </div>
 
-        <Button size="lg" onClick={handleComplete} className="bg-brand text-black hover:bg-brand-hover px-12">
+        <Button size="lg" onClick={handleComplete} className="bg-brand text-brand-foreground hover:bg-brand-hover px-12">
           Go to Dashboard
         </Button>
       </div>
@@ -93,7 +93,7 @@ export default function SetupWizard() {
             return (
               <div key={step.id} className={cn("flex items-center gap-3 transition-colors", isActive ? "text-white" : isCompleted ? "text-neutral-500" : "text-neutral-600")}>
                 <div className={cn("flex items-center justify-center h-6 w-6 rounded-full border text-xs font-bold", 
-                  isCompleted ? "bg-brand border-brand text-black" : isActive ? "border-brand text-brand" : "border-neutral-700 text-neutral-600"
+                  isCompleted ? "bg-brand border-brand text-brand-foreground" : isActive ? "border-brand text-brand-fg" : "border-neutral-700 text-neutral-600"
                 )}>
                   {isCompleted ? <CheckCircle2 className="h-3 w-3" /> : idx + 1}
                 </div>
@@ -196,7 +196,7 @@ export default function SetupWizard() {
               <div className="space-y-8 anim-fade-up flex-1">
                 <div className="space-y-2 text-center">
                   <div className="h-16 w-16 bg-surface-2 rounded-2xl border border-border-strong flex items-center justify-center mx-auto mb-6 shadow-xl">
-                    <Package className="h-8 w-8 text-brand" />
+                    <Package className="h-8 w-8 text-brand-fg" />
                   </div>
                   <h2 className="text-2xl font-bold text-white">Add your first product</h2>
                   <p className="text-neutral-400 max-w-sm mx-auto">Get your store started by adding a product to sell, or import your existing catalog.</p>
@@ -204,7 +204,7 @@ export default function SetupWizard() {
                 
                 <div className="grid sm:grid-cols-2 gap-4 mt-8">
                   <div className="rounded-xl border border-border-strong bg-surface-2 p-6 flex flex-col items-center text-center gap-4 hover:border-brand/50 transition-colors cursor-pointer group">
-                    <div className="h-12 w-12 rounded-full bg-brand/10 text-brand flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="h-12 w-12 rounded-full bg-brand/10 text-brand-fg flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Plus className="h-6 w-6" />
                     </div>
                     <div>
@@ -243,7 +243,7 @@ export default function SetupWizard() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   {/* Theme 1 */}
                   <div className="rounded-xl border-2 border-brand overflow-hidden relative cursor-pointer">
-                    <div className="absolute top-2 right-2 bg-brand text-black text-[10px] font-bold px-2 py-0.5 rounded-full z-10">Selected</div>
+                    <div className="absolute top-2 right-2 bg-brand text-brand-foreground text-[10px] font-bold px-2 py-0.5 rounded-full z-10">Selected</div>
                     <div className="h-32 bg-neutral-800 w-full relative">
                       {/* Abstract theme representation */}
                       <div className="absolute inset-0 p-4 flex flex-col gap-2">
@@ -282,7 +282,7 @@ export default function SetupWizard() {
               <Button variant="ghost" className="text-neutral-400 hover:text-white" onClick={handleBack} disabled={currentStep === 0}>
                 <ArrowLeft className="h-4 w-4 mr-2" /> Back
               </Button>
-              <Button className="bg-brand text-black hover:bg-brand-hover px-8" onClick={handleNext}>
+              <Button className="bg-brand text-brand-foreground hover:bg-brand-hover px-8" onClick={handleNext}>
                 {currentStep === STEPS.length - 1 ? 'Finish Setup' : 'Next'} <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </div>

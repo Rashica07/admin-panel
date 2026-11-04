@@ -72,5 +72,7 @@ export function createPulseClient(accessToken?: string) {
     accessToken,
     tenantId: activeTenantId ?? undefined,
     onAuthError: handleAuthError,
+    // Demo mode has no realtime server to connect to.
+    autoConnectSocket: process.env.NEXT_PUBLIC_DEMO_MODE === 'false',
   });
 }

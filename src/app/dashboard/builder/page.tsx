@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { useQuery } from '@tanstack/react-query';
 import { createPulseClient } from '@/lib/novus-pulse-client';
@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { defaultPortfolioContent } from '@/lib/default-content';
+import { renderPreviewHtml } from '@/demo/site-preview';
 import { useUIStore } from '@/store/useStore';
 import {
   ChevronRight,
@@ -207,7 +208,7 @@ function FieldEditor({
             onClick={() =>
               onChange(path, [...value, value.length > 0 ? emptyClone(value[value.length - 1]) : ''])
             }
-            className="flex items-center gap-1 text-[11px] text-brand hover:text-brand/80 transition-colors"
+            className="flex items-center gap-1 text-[11px] text-brand-fg hover:text-brand-fg/80 transition-colors"
           >
             <Plus className="h-3 w-3" /> Add
           </button>
@@ -389,7 +390,7 @@ export default function VisualBuilderPage() {
           err instanceof Error && 'statusCode' in err && (err as { statusCode: number }).statusCode === 401;
         if (!isAuthError) {
           toast.error('Could not load page content', {
-            description: err instanceof Error ? err.message : 'Is the Novus Pulse backend running on port 3000?',
+            description: err instanceof Error ? err.message : 'Is the OMNI API reachable?',
           });
         }
       } finally {
@@ -452,6 +453,8 @@ export default function VisualBuilderPage() {
     toast.success(`"${labelize(key)}" restored to defaults`);
   };
 
+  const previewHtml = useMemo(() => (content ? renderPreviewHtml(content) : ''), [content]);
+
   if (isLoading || !content) {
     return (
       <div className="flex h-[calc(100vh-8rem)] items-center justify-center text-neutral-400 gap-2">
@@ -479,7 +482,7 @@ export default function VisualBuilderPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-brand" /> Visual Editor
+                <Sparkles className="h-4 w-4 text-brand-fg" /> Visual Editor
               </h1>
               <p className="text-[11px] text-neutral-400 mt-0.5">
                 Every section of your site — synced live.
@@ -506,7 +509,7 @@ export default function VisualBuilderPage() {
                     className="flex items-center gap-2 flex-1 px-4 py-3 text-left"
                   >
                     <ChevronRight
-                      className={`h-4 w-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-90 text-brand' : ''}`}
+                      className={`h-4 w-4 text-neutral-500 transition-transform ${isOpen ? 'rotate-90 text-brand-fg' : ''}`}
                     />
                     <span className={`text-sm font-medium ${isOpen ? 'text-white' : 'text-neutral-300'}`}>
                       {name}
@@ -582,11 +585,20 @@ export default function VisualBuilderPage() {
               viewMode === 'mobile' ? 'w-[375px] h-[812px]' : 'w-full h-full'
             }`}
           >
-            <iframe
-              src={previewSrc}
-              className="w-full h-full border-0"
-              title="Portfolio Live Preview"
-            />
+            {process.env.NEXT_PUBLIC_DEMO_MODE !== 'false' ? (
+              <iframe
+                srcDoc={previewHtml}
+                sandbox=""
+                className="w-full h-full border-0"
+                title="Portfolio Live Preview"
+              />
+            ) : (
+              <iframe
+                src={previewSrc}
+                className="w-full h-full border-0"
+                title="Portfolio Live Preview"
+              />
+            )}
           </div>
         </div>
       </div>

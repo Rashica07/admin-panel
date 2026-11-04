@@ -32,7 +32,7 @@ export function PageRevisionsPanel({ pageId, open }: { pageId: string; open: boo
   return (
     <Card className="border-brand/40">
       <CardContent className="p-6">
-        <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-brand">
+        <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold text-brand-fg">
           <History className="h-5 w-5" />
           Version History
         </h3>

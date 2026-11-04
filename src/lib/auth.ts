@@ -41,7 +41,30 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   }
 }
 
+/**
+ * DEMO MODE (default): there is no backend. Any sign-in succeeds and yields a
+ * fixed demo workspace session; all data calls are answered in the browser by
+ * src/demo/mock-api.ts. Set NEXT_PUBLIC_DEMO_MODE=false to use a real API.
+ */
+const DEMO = process.env.NEXT_PUBLIC_DEMO_MODE !== 'false';
+
+const DEMO_USER = {
+  id: 'demo-user',
+  email: 'demo@novuspulse.dev',
+  name: 'Alex Rivera',
+  role: 'admin',
+  tenantId: 'demo-tenant',
+  firstName: 'Alex',
+  lastName: 'Rivera',
+  plan: 'agency',
+  status: 'active',
+  tenantSlug: 'meridian-roasters',
+  accessToken: 'demo-access-token',
+  refreshToken: 'demo-refresh-token',
+};
+
 export const authOptions: NextAuthOptions = {
+  secret: process.env.NEXTAUTH_SECRET || (DEMO ? 'novus-demo-secret-not-for-production' : undefined),
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -50,6 +73,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        if (DEMO) return DEMO_USER as any;
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
@@ -132,6 +156,19 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, trigger }) {
+      if (DEMO) {
+        // Fixed demo identity; never refresh (there is no backend to ask).
+        if (user || !token.userId) {
+          return {
+            ...token,
+            accessToken: DEMO_USER.accessToken, refreshToken: DEMO_USER.refreshToken,
+            userId: DEMO_USER.id, email: DEMO_USER.email, firstName: DEMO_USER.firstName, lastName: DEMO_USER.lastName,
+            role: DEMO_USER.role, tenantId: DEMO_USER.tenantId, plan: DEMO_USER.plan, status: DEMO_USER.status,
+            tenantSlug: DEMO_USER.tenantSlug, accessTokenExpires: Date.now() + 365 * 24 * 60 * 60 * 1000,
+          };
+        }
+        return token;
+      }
       // Explicit refresh — call `update()` client-side (e.g. right after
       // a plan change/payment) to pull fresh plan/status immediately,
       // rather than waiting for a full re-login or the 15-min token

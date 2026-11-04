@@ -99,7 +99,7 @@ export default function EditPost() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">{page.title}</h1>
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white">{page.title}</h1>
             <p className="text-sm text-neutral-400">Manage post metadata and categories.</p>
           </div>
           <div className="ml-auto flex items-center gap-2">
@@ -111,7 +111,7 @@ export default function EditPost() {
                 <Paintbrush className="h-4 w-4" /> Visual Editor
               </Button>
             </Link>
-            <Button type="submit" isLoading={isUpdating} className="bg-brand text-black hover:bg-brand-hover gap-2">
+            <Button type="submit" isLoading={isUpdating} className="bg-brand text-brand-foreground hover:bg-brand-hover gap-2">
               <Save className="h-4 w-4" /> Save Changes
             </Button>
           </div>
@@ -181,7 +181,7 @@ export default function EditPost() {
           </p>
         </div>
         <Link href={`/dashboard/builder?page=${id}`}>
-          <Button size="lg" className="bg-brand text-black hover:bg-brand-hover gap-2 shadow-xl shadow-brand/20">
+          <Button size="lg" className="bg-brand text-brand-foreground hover:bg-brand-hover gap-2">
             <Paintbrush className="h-5 w-5" /> Open Visual Editor
           </Button>
         </Link>

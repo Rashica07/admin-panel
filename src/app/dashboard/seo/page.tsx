@@ -28,8 +28,7 @@ export default function SeoPage() {
     <PlanGate feature="seo">
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <Search className="h-7 w-7 text-brand" /> SEO & Meta Tags
+          <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2"> SEO & Meta Tags
           </h1>
           <p className="text-sm text-neutral-400 mt-1">
             Optimize every page for search engines and social sharing.

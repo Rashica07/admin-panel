@@ -32,7 +32,7 @@ const THEME_LIBRARY = [
   {
     id: 'dawn',
     name: 'Dawn',
-    author: 'Novus Pulse',
+    author: 'OMNI',
     description: 'A chic and minimalist theme that lets product images take center stage.',
     gradient: 'from-orange-100 to-amber-50',
     colors: { primary: '#000000', background: '#ffffff', surface: '#f4f4f4', accent: '#ff8c00' },
@@ -40,7 +40,7 @@ const THEME_LIBRARY = [
   {
     id: 'refresh',
     name: 'Refresh',
-    author: 'Novus Pulse',
+    author: 'OMNI',
     description: 'Bold theme that elevates product quality and brand storytelling.',
     gradient: 'from-blue-900 to-slate-900',
     colors: { primary: '#ffffff', background: '#0f172a', surface: '#1e293b', accent: '#3b82f6' },
@@ -48,7 +48,7 @@ const THEME_LIBRARY = [
   {
     id: 'craft',
     name: 'Craft',
-    author: 'Novus Pulse',
+    author: 'OMNI',
     description: 'A refined theme that celebrates craftsmanship and elegant design.',
     gradient: 'from-stone-200 to-stone-100',
     colors: { primary: '#44403c', background: '#fafaf9', surface: '#f5f5f4', accent: '#78716c' },
@@ -56,7 +56,7 @@ const THEME_LIBRARY = [
   {
     id: 'sense',
     name: 'Sense',
-    author: 'Novus Pulse',
+    author: 'OMNI',
     description: 'An energizing theme featuring extensive product detail layouts.',
     gradient: 'from-emerald-50 to-teal-100',
     colors: { primary: '#064e3b', background: '#ecfdf5', surface: '#d1fae5', accent: '#10b981' },
@@ -64,7 +64,7 @@ const THEME_LIBRARY = [
   {
     id: 'ride',
     name: 'Ride',
-    author: 'Novus Pulse',
+    author: 'OMNI',
     description: 'A distinct, dynamic theme that champions sporting goods.',
     gradient: 'from-zinc-900 to-black',
     colors: { primary: '#ffffff', background: '#000000', surface: '#18181b', accent: '#eab308' },
@@ -76,10 +76,10 @@ const RADIUS_OPTIONS = ['0px', '4px', '8px', '12px', '24px', '9999px'];
 
 export default function ThemesPage() {
   const { data: session } = useSession();
-  const { actualPlan } = usePlan();
+  const { realPlan } = usePlan();
   const [theme, setTheme] = useState(DEFAULT_THEME);
   const [saving, setSaving] = useState(false);
-  const [activeThemeName, setActiveThemeName] = useState('Novus Default');
+  const [activeThemeName, setActiveThemeName] = useState('OMNI Default');
   const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
 
   useEffect(() => {
@@ -128,12 +128,12 @@ export default function ThemesPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white">Themes</h1>
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em] text-white">Themes</h1>
             <p className="text-sm text-neutral-400 mt-1">
               Manage your store's design and layout.
             </p>
           </div>
-          <Button variant="outline" className="border-brand/20 text-brand hover:bg-brand/10">
+          <Button variant="outline" className="border-border-strong text-brand-fg hover:bg-brand/10">
             Visit Theme Store
           </Button>
         </div>
@@ -187,7 +187,7 @@ export default function ThemesPage() {
               <div className="flex gap-3 mt-8">
                 <Dialog.Root open={isCustomizeOpen} onOpenChange={setIsCustomizeOpen}>
                   <Dialog.Trigger asChild>
-                    <Button className="bg-brand hover:bg-brand/90 text-white font-medium px-8 shadow-brand/20 shadow-lg">
+                    <Button className="bg-brand hover:bg-brand/90 text-white font-medium px-8 shadow-lg">
                       Customize
                     </Button>
                   </Dialog.Trigger>
@@ -300,9 +300,9 @@ export default function ThemesPage() {
                       variant="outline" 
                       className="w-full border-border-strong text-white hover:bg-surface-2 disabled:opacity-50"
                       onClick={() => saveTheme({ ...DEFAULT_THEME, colors: { ...DEFAULT_THEME.colors, ...t.colors } }, t.name)}
-                      disabled={saving || actualPlan === 'starter'}
+                      disabled={saving || realPlan === 'starter'}
                     >
-                      {actualPlan === 'starter' ? <><Lock className="h-4 w-4 mr-2" /> Upgrade to Studio</> : 'Add'}
+                      {realPlan === 'starter' ? <><Lock className="h-4 w-4 mr-2" /> Upgrade to Studio</> : 'Add'}
                     </Button>
                   </div>
                 </div>

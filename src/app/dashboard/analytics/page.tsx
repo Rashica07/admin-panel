@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createPulseClient } from '@/lib/novus-pulse-client';
 import { useUIStore } from '@/store/useStore';
 import { PlanGate } from '@/components/plan-gate';
+import { FigureStrip } from '@/components/omni/traffic-chart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -80,8 +81,8 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-              <BarChart3 className="h-7 w-7 text-brand" /> Analytics & Reports
+            <h1 className="text-[19px] font-semibold tracking-[-0.01em] flex items-center gap-2">
+              <BarChart3 className="h-7 w-7 text-brand-fg" /> Analytics & Reports
             </h1>
             <p className="text-sm text-neutral-400 mt-2">
               Track your website traffic and visitor behavior in real-time.
@@ -95,7 +96,7 @@ export default function AnalyticsPage() {
                 size="sm"
                 className={cn(
                   "text-sm px-5 py-1.5 rounded-lg font-medium transition-all",
-                  range === d ? "bg-white text-black shadow-sm" : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                  range === d ? "bg-surface-3 text-foreground" : "text-neutral-400 hover:text-white hover:bg-neutral-800"
                 )}
                 onClick={() => setRange(d)}
               >
@@ -116,58 +117,15 @@ export default function AnalyticsPage() {
           </div>
         ) : (
           <>
-            {/* Stat Cards */}
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 anim-fade-up stagger-1">
-              <StatCard
-                icon={Eye}
-                label="Total Views"
-                value={formatNum(stats?.totalViews ?? 0)}
-                hint="total page views"
-                trend="+12%"
-                trendUp={true}
-                accent="text-brand"
-                accentBg="bg-brand/10"
-                accentBorder="border-brand/20"
-              />
-              <StatCard
-                icon={Users}
-                label="Unique Visitors"
-                value={formatNum(stats?.uniqueVisitors ?? 0)}
-                hint="fingerprinted sessions"
-                trend="+8%"
-                trendUp={true}
-                accent="text-emerald-400"
-                accentBg="bg-emerald-500/10"
-                accentBorder="border-emerald-500/20"
-              />
-              <StatCard
-                icon={MousePointerClick}
-                label="Top Referrer"
-                value={stats?.referrers?.[0]?.referrer ?? 'Direct'}
-                hint={`${formatNum(stats?.referrers?.[0]?.count ?? 0)} visits`}
-                accent="text-violet-400"
-                accentBg="bg-violet-500/10"
-                accentBorder="border-violet-500/20"
-              />
-              <StatCard
-                icon={TrendingUp}
-                label="Avg. Daily Views"
-                value={formatNum(
-                  stats?.dailyViews?.length
-                    ? Math.round(
-                        stats.dailyViews.reduce((s: number, d: any) => s + d.views, 0) /
-                          stats.dailyViews.length,
-                      )
-                    : 0,
-                )}
-                hint={`daily average`}
-                trend="-3%"
-                trendUp={false}
-                accent="text-sky-400"
-                accentBg="bg-sky-500/10"
-                accentBorder="border-sky-500/20"
-              />
-            </div>
+            {/* Key figures — computed only from the API response; no invented trends. */}
+            <FigureStrip
+              items={[
+                { label: 'Total views', value: formatNum(stats?.totalViews ?? 0), hint: `last ${range} days` },
+                { label: 'Unique visitors', value: formatNum(stats?.uniqueVisitors ?? 0), hint: 'distinct visitor ids' },
+                { label: 'Avg. daily views', value: formatNum(stats?.dailyViews?.length ? Math.round(stats.dailyViews.reduce((s: number, d: any) => s + d.views, 0) / stats.dailyViews.length) : 0), hint: 'per day in range' },
+                { label: 'Top referrer', value: <span className="text-[17px]">{stats?.referrers?.[0]?.referrer ?? 'direct'}</span>, hint: `${formatNum(stats?.referrers?.[0]?.count ?? 0)} visits` },
+              ]}
+            />
 
             {/* Daily Views Area Chart */}
             <Card className="np-surface overflow-hidden anim-fade-up stagger-2">
@@ -273,7 +231,7 @@ export default function AnalyticsPage() {
                           const Icon = DEVICE_ICONS[d.device.toLowerCase()] ?? Globe;
                           return (
                             <div key={d.device} className="flex items-center gap-4 px-3 py-2.5 rounded-lg hover:bg-surface-2 transition-colors">
-                              <div className="h-8 w-8 rounded-md bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+                              <div className="h-8 w-8 rounded-md bg-brand/10 border border-border-strong flex items-center justify-center text-brand-fg">
                                 <Icon className="h-4 w-4 shrink-0" />
                               </div>
                               <span className="text-sm font-medium text-neutral-200 flex-1 capitalize">{d.device}</span>
@@ -385,7 +343,7 @@ function CustomTooltip({ active, payload, label }: any) {
       <div className="bg-surface border border-border-strong rounded-xl p-4 shadow-xl">
         <p className="text-xs text-neutral-400 mb-2 font-medium uppercase tracking-wider">{date}</p>
         <p className="text-lg font-bold text-white flex items-center gap-2">
-          <span className="h-2.5 w-2.5 rounded-full bg-brand shadow-[0_0_8px_rgba(255,140,0,0.5)]"></span>
+          <span className="h-2.5 w-2.5 rounded-full bg-brand"></span>
           {formatNum(payload[0].value)} <span className="text-sm font-normal text-neutral-400">views</span>
         </p>
       </div>
